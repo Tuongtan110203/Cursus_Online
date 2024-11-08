@@ -1,0 +1,27 @@
+.wrapper-category{
+    //category 
+  .card-img-top{
+    margin-top: 15px;
+    opacity: 0.6;
+    height: 40px !important;
+  }
+
+  .mt-full{
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  a {
+    text-decoration: none;
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
+  .text {
+    color: #0067a7;
+    h2 {
+      border-bottom: 2px solid #f5912c; 
+      padding-bottom: 10px;
+      display: inline-block; 
+    }
+  }
+}

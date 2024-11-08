@@ -1,0 +1,51 @@
+@import 'normalize.css';
+
+
+:root{
+    --min-global-width: 1536px;  
+    --min-height: 1500px;
+    --height-footer: 370px;
+}
+
+*{
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Ngăn chặn cuộn ngang nếu không cần thiết */
+  }
+.info-instructor-span{
+    font-size: 13px;
+}
+.text-price{
+    color: orange;
+    font-size: 20px;
+    margin-left: 100px
+}
+.margin-bottom-footer{
+    margin-bottom: 100px;
+}
+
+.slick-prev, .slick-next {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+  }
+  
+  .slick-prev {
+    left: 15px;
+  }
+  
+  .slick-next {
+    right: 15px;
+  }
+  
+  .slick-prev:before, .slick-next:before {
+    font-size: 30px;
+    color: black;
+    opacity: 1;
+  }
+  

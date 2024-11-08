@@ -1,0 +1,79 @@
+.text {
+    color: #0067a7;
+    h2 {
+      border-bottom: 2px solid #f5912c; 
+      padding-bottom: 10px;
+      display: inline-block; 
+    }
+  }
+  a {
+    text-decoration: none;
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
+  .background-featured-courses{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #fff7f5;
+    min-height: 1200px;
+    //image course
+    .image-course{
+    position: relative;
+    border: 1px solid grey;
+    margin-top: 30px;
+     img{
+      width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+     }
+     .content-image{
+      margin-left: 15px;
+      border-bottom: 1px solid #dee2e6;
+     }
+     h5{
+      color: #0067a7;
+      font-weight: bold;
+      font-size: 17px;
+      line-height: normal;
+      &:hover{
+        color: red;
+      }
+     }
+     
+    }
+    // image avatar
+    .image-avatar {
+      border-bottom: 1px solid #dee2e6;
+      img{
+      margin-top: 10px;
+      height: 50px;
+      width: 50px;
+      border-radius: 100%;
+      margin-left: 15px;
+      }
+    }
+
+    .heart-icon {
+      position: absolute;
+      top: -7px;
+      right: 0px;
+      font-size: 24px;
+      color: black;
+      cursor: pointer;
+  
+      &:hover {
+        color: red;
+      }
+    }
+    //button cart
+    .button-cart{
+      width: 100%;
+    }
+    //info-instructor-span
+    .info-instructor-span{
+      color: black;
+      font-size: 13px;
+    }
+  
+   }

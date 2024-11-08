@@ -1,0 +1,34 @@
+.wrapper-transaction {
+    padding: 20px;
+  }
+  
+  .transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .transaction-table th,
+  .transaction-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .transaction-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .status {
+    font-weight: bold;
+    &.success {
+      color: green;
+    }
+    &.pending {
+      color: orange;
+    }
+    &.fail {
+      color: red;
+    }
+  }
+  

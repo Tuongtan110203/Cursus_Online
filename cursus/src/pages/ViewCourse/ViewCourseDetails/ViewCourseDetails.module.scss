@@ -1,0 +1,355 @@
+
+.wrapper-course-details{
+    background-color: #f3f3f3;
+}
+.course-details-header {
+    background-color: #097890;
+    min-height: 230px;
+ //   position: relative;
+    a {
+      color: #fff;
+      text-decoration: none;
+      &:hover {
+        color: aquamarine;
+        text-decoration: underline;
+      }
+    }
+    .course-detail-title {
+        p,h5,h4,span {
+          color: white;
+        }
+      }
+  }
+  //intro video
+.intro-video{
+    h5 {
+    margin-left: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd; 
+    color: #1d71ab; 
+    }
+  }
+//course-details-video
+.course-details-video {
+    border: 2px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin: 25px 0;
+    height: 480px;
+    .video{
+        margin-top: 20px;
+    }
+  }
+  //intro course 
+  .details-course-chapter{
+    border: 2px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin: 25px 0;
+    min-height: 480px;  
+
+}
+
+  .intro-course{
+    margin-left: 15px;
+    h5 {
+    font-weight: bold;
+    border-bottom: 1px solid #ddd; 
+    color: #1d71ab; 
+    }
+  }
+//content course
+.details-content-couse{
+  border: 2px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  margin: 25px 0;
+  h5{
+    margin-left: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd; 
+    color: #1d71ab; 
+  }
+}
+.content-course{
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd; 
+  margin-left: 15px;
+  &:hover{
+    color: rgb(111, 154, 213);
+  }
+}
+.lesson-list {
+  margin-left: 15px;
+  padding: 10px 0;
+  border-top: 1px solid #ddd; 
+  color: #333; 
+  display: flex; 
+  border-bottom: 1px solid #ddd; 
+  justify-content: space-between; 
+  flex-wrap: nowrap; 
+  align-items: center; 
+  span{
+    margin-left: 8px;
+  }
+}
+
+.child-lesson {
+  display: flex;
+  flex-direction: center; 
+}
+
+.time-lesson {
+  display: flex;
+  flex-direction: center; 
+}
+.child-time{
+  margin-right: 15px;
+}
+//info-instructo
+.info-instructor {
+  border: 2px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 25px 0;
+  min-height: 200px;
+
+  h5 {
+    margin-left: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    color: #1d71ab;
+  }
+
+  .image-avatar {
+    img {
+      margin-left: 15px;
+      border-radius: 15px 50px;
+      width: 190px;
+      height: auto;
+    }
+  }
+
+  .content-instructor {
+    p {
+      margin-bottom: 5px;
+    }
+  }
+ .show-more-less{
+  display: flex;
+  justify-content: center;
+  a{
+    margin-top: -4px;
+    margin-right: 10px;
+    color: #1d71ab;
+    cursor: pointer;
+  }
+ }
+
+}
+//view more
+.view-more{
+  a{
+    color: orange;
+  }
+  .icon-view-more{
+    color: orange;
+    margin-left: 5px;
+    font-size: 13px;
+    transition: transform 0.3s;
+  }
+}
+.blur-text {
+  opacity: 0.5;  
+  transition: opacity 0.3s ease;  
+}
+//rating
+.wrapper-rating {
+  border: 2px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 25px 0;
+  min-height: 540px;
+  padding: 15px;
+  .body-rating {
+    padding: 15px;
+    border: 2px solid #1d71ab;
+  }
+  .star{
+    width: 30px;
+    height: auto;
+  }
+  h5 {
+    margin-left: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    color: #1d71ab;
+  }
+  .comment-rating{
+    margin-top: 15px;
+  }
+  .comment-rating {
+    margin-top: 20px;
+  }
+  
+  .input-comment  {
+    textarea{
+      width: 100%; 
+      min-height: 150px; 
+      padding: 10px;
+      border-radius: 8px; 
+      border: 2px solid #ddd; 
+      font-size: 16px; 
+      line-height: 1.5; 
+      resize: both; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+      transition: border-color 0.3s, box-shadow 0.3s; 
+      &:focus{
+        border-color: #1d71ab;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        outline: none; 
+      }
+    }
+  }
+  //submit rating
+  .submit-rating{
+    button{
+      margin-top: 15px;
+    }
+  }
+}
+//sidebar
+.sidebar{
+  padding: 15px;
+  background-color: white;
+  border-radius: 15px ;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 57px 0;
+  position: absolute;
+  min-height: 1000px !important;
+  top: 190px;
+  right: 130px;
+  width: 400px;
+  .add-course-details{
+    padding: 15px;
+    border: 1px solid #ccc;
+    div{
+      margin-bottom: 20px;
+     
+    }
+  }
+  .price{
+    font-size: 25px;
+  }
+  .chapter-add, .lesson-add, .quizz-add{
+    img{
+      width: 15px;
+      height: auto;
+      margin-left: 3px;
+      border-radius: 5px;
+     background-color: #ff6600;     
+      margin-right: 11px;
+    }
+  }
+  .time-add, .sylabus-add,.benefits{
+    svg {
+      margin-right: 10px; 
+      color: #ff6600;     
+      font-size: 20px;  
+    }
+  }
+  //button add
+  .button-add{
+    button{
+      width: 100%;
+      height: 45px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6600;
+      color: white;
+      cursor: pointer;
+    }
+  }
+  //color price
+  .color-price{
+    color: #ff6600;
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 10px;
+  }
+ 
+  
+}
+ //discount
+ .discount-course{
+  margin-top: 45px;
+  .discount-title{
+   border-bottom: 1px solid grey !important;
+   h3 {
+    font-family: 'Pacifico', cursive;   
+    font-weight: 600;
+    color: #097890;
+    font-size: 1.4em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+  }
+  .image-course{
+    position: relative;
+    border: 2px solid grey;
+     img{
+      width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+     }
+     .content-image{
+      margin-left: 15px;
+      border-bottom: 1px solid #dee2e6;
+     }
+     h5{
+      color: #0067a7;
+      font-weight: bold;
+      font-size: 17px;
+      line-height: normal;
+      &:hover{
+        color: red;
+      }
+     }
+     
+    }
+    .heart-icon {
+      position: absolute;
+      top: -7px;
+      right: 0px;
+      font-size: 24px;
+      color: black;
+      cursor: pointer;
+  
+      &:hover {
+        color: red;
+      }
+    }
+    .image-avatar {
+      display: flex;
+      align-items: center; 
+      border-bottom: 1px solid #dee2e6;  
+      img {
+        margin-top: 10px;
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+        margin-left: 15px;
+      }
+    }
+    .info-instructor-span{
+      color: black;
+      font-size: 13px;
+    }
+    .text-price {
+      margin-left: 55px; 
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff5722;
+    }
+}
+ 
