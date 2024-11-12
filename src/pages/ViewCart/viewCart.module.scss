@@ -145,12 +145,12 @@
     }
   }
 
-  .discount-code {
+  .discount-code,.referral-code {
     margin-bottom: 20px;
     display: flex;
     gap: 10px;
 
-    .discount-input {
+    .discount-input,.referral-input {
       flex: 1;
       padding: 12px;
       font-size: 16px;
@@ -164,7 +164,7 @@
       }
     }
 
-    .apply-discount-button {
+    .apply-discount-button,.apply-referral-button {
       background-color: #0693e3;
       color: white;
       padding: 12px 20px;

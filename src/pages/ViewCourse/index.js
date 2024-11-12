@@ -296,6 +296,26 @@ function ViewCourse() {
                   </div>
                 ))}
               </div>
+
+              <div className={cx("video-year")}>
+                <h5 className={cx("title-year")}>Years</h5>
+                {[
+                  { label: "2018 - 2019", value: "2018-2019" },
+                  { label: "2019 - 2020", value: "2019-2020" },
+                  { label: "2020 - 2021", value: "2020-2021" },
+                  { label: "2021 - 2022", value: "2021-2022" },
+                  { label: "2022 - 2023", value: "2022-2023" },
+                  { label: "2024+", value: "2024+" },
+                ].map((year) => (
+                  <div key={year.value} className={cx("year-option")}>
+                    <label>
+                      <input type="checkbox" value={year.value} />
+                      <span>{year.label}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+
               <div className={cx("topic")}>
                 <h5 className={cx("title-topic")}>Topics</h5>
                 {[
@@ -326,6 +346,29 @@ function ViewCourse() {
                     <label>
                       <input type="radio" name="level" value={level.value} />
                       <span>{level.label}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div className={cx("instructor")}>
+                <h5 className={cx("title-instructor")}>Instructor</h5>
+                {[
+                  { label: "Nguyen Van A", value: "nguyen van a" },
+                  { label: "Nguyen Van B", value: "nguyen van b" },
+                  { label: "Nguyen Van C", value: "nguyen van c" },
+                  { label: "Nguyen Van D", value: "nguyen van d" },
+                ].map((instructor) => (
+                  <div
+                    key={instructor.value}
+                    className={cx("instructor-option")}
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="instructor"
+                        value={instructor.value}
+                      />
+                      <span>{instructor.label}</span>
                     </label>
                   </div>
                 ))}

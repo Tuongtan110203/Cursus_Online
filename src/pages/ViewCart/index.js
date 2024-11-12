@@ -162,6 +162,14 @@ function ViewCart() {
                 />
                 <button className={cx("apply-discount-button")}>Apply</button>
               </div>
+              <div className={cx("referral-code")}>
+                <input
+                  type="text"
+                  className={cx("referral-input")}
+                  placeholder="Enter referral code"
+                />
+                <button className={cx("apply-referral-button")}>Apply</button>
+              </div>
               <div className={cx("checkout-button")}>
                 <a href="/check-out">
                   Proceed to Checkout

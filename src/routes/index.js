@@ -12,7 +12,10 @@ import SearchPage from "~/pages/SearchPage";
 import BookMark from "~/pages/BookMark";
 import Transaction from "~/pages/Transaction";
 import Profile from "~/pages/Login/Profile";
-
+import About from "~/pages/Home/About";
+import Checkout from "~/pages/Checkout";
+import OrderReceive from "~/pages/Checkout/OrderReceive";
+import Policy from "~/pages/Policy";
 const publicRoutes = [
   { path: "/", component: Home, layout: Home },
   { path: "/login", component: Login, layout: Login },
@@ -22,9 +25,29 @@ const publicRoutes = [
     layout: ViewCourseDetails,
   },
   {
+    path: "/term-policy",
+    component: Policy,
+    layout: Policy,
+  },
+  {
+    path: "/order-received",
+    component: OrderReceive,
+    layout: OrderReceive,
+  },
+  {
     path: "/book-mark",
     component: BookMark,
     layout: BookMark,
+  },
+  {
+    path: "/check-out",
+    component: Checkout,
+    layout: Checkout,
+  },
+  {
+    path: "/about",
+    component: About,
+    layout: About,
   },
   {
     path: "/profile",

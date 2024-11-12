@@ -77,7 +77,32 @@
       }
     }
 
-    //end video-duration
+    //end video-year
+       //video-year
+       .video-year {
+        margin-top: 10px;
+      }
+    
+      .title-year {
+        font-weight: bold;
+        border-top: 2px solid #eee;
+        padding-top: 10px;
+        margin-bottom: 10px;
+      }
+    
+      .year-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        margin-top: 5px;
+    
+        input[type="checkbox"] {
+          margin-right: 8px;
+        }
+      }
+  
+      //end video-year
     //topic 
     .topic {
       margin-top: 10px;
@@ -125,6 +150,30 @@
       }
     }    
     //end levels
+    //instructor
+     .instructor {
+      margin-top: 10px;
+    }
+  
+    .title-instructor {
+      font-weight: bold;
+      border-top: 2px solid #eee;
+      padding-top: 10px;
+      margin-bottom: 10px;
+    }
+    .instructor-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 5px;
+      input[type="radio"] {
+        margin-right: 8px;
+      }
+    }    
+    //end instructor
+
+    //end insrtuctor
     //start price
     .price {
       margin-top: 10px;

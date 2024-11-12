@@ -8,373 +8,125 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "~/components/Layout/Header/tippyStyles.module.scss";
 //import course
-import course1 from "~/images/course1.jpg";
-import course2 from "~/images/course2.jpg";
-import course3 from "~/images/course3.jpg";
-import course4 from "~/images/course4.jpg";
-import course5 from "~/images/course5.jpg";
-import course6 from "~/images/course6.jpg";
-import course7 from "~/images/course7.jpg";
-import course8 from "~/images/course8.jpg";
-import course9 from "~/images/course9.jpg";
+import course10 from "~/images/course10.jpg";
+import course11 from "~/images/course11.jpg";
+import course12 from "~/images/course12.jpg";
+import course13 from "~/images/course13.jpg";
+import course14 from "~/images/course14.jpg";
+import course15 from "~/images/course15.jpg";
+
 //import fontawesome from "~/
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //import tuong
 import tuong from "~/images/tuong.jpg";
+import avatar from "~/images/avatar.png";
+import anonymous from "~/images/anonymous.png";
+
+import { useState } from "react";
 
 const cx = classNames.bind(styles);
 
 function FeaturedCourse() {
+  const [courses, setCourses] = useState([
+    {
+      id: 1,
+      image: course10,
+      title: "Build Automatic Money Making Machine on Shopee",
+      instructor: {
+        name: "Nguyen Tan Tuong",
+        image: tuong,
+      },
+    },
+    {
+      id: 2,
+      image: course11,
+      title: "100 Days of Code: The Complete Python Pro Bootcamp",
+      instructor: {
+        name: "Joe Smith",
+        image: avatar,
+      },
+    },
+    {
+      id: 3,
+      image: course12,
+      title: "Become a Certified Web Developer: HTML, CSS and JavaScript",
+      instructor: {
+        name: "Joe Smith 1",
+        image: anonymous,
+      },
+    },
+    {
+      id: 4,
+      image: course13,
+      title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      instructor: {
+        name: "Joe Smith 2",
+        image: anonymous,
+      },
+    },
+    {
+      id: 5,
+      image: course14,
+      title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      instructor: {
+        name: "Joe Smith 3",
+        image: anonymous,
+      },
+    },
+    {
+      id: 6,
+      image: course15,
+      title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      instructor: {
+        name: "Joe Smith 4",
+        image: anonymous,
+      },
+    },
+  ]);
+
   return (
     <div className={cx("background-featured-courses")}>
-      <div className="container">
+      <div className={cx("container")}>
         <div className={cx("col-inner text-center mt-3", "text")}>
           <h2 className={cx("mt-3")}>Featured Courses</h2>
         </div>
         <div className={cx("row")}>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course1} alt="course1" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
+          {courses.map((course) => (
+            <div key={course.id} className={cx("col-4")}>
+              <div className={cx("image-course")}>
+                <a href="/course-details">
+                  <img src={course.image} alt="course1" />
+                </a>
+                <Link to="yeu-thich">
+                  <Tippy content="Yêu thích" arrow={true} theme="custom">
+                    <div className={cx("heart-icon")}>
+                      <FontAwesomeIcon icon={faHeart} />
+                    </div>
+                  </Tippy>
+                </Link>
+                <Tippy content="Lượt đánh giá" arrow={true} theme="custom">
+                  <div className={cx("rating-icon")}>
+                    <FontAwesomeIcon icon={faStar} />
+                    4.5 (120)
                   </div>
                 </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course2} alt="course2" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
+                <a href="/course-details">
+                  <div className={cx("content-image")}>
+                    <h5>{course.title}</h5>
                   </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course3} alt="course3" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
+                </a>
+                <a href="view-instructor">
+                  <div className={cx("image-avatar")}>
+                    <img src={course.instructor.image} alt="tuong" />
+                    <span className={cx("info-instructor-span")}>
+                      {course.instructor.name}
+                    </span>
                   </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
+                </a>
+              </div>
             </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <Link to="course-details">
-                <img src={course4} alt="course4" />
-              </Link>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <Link to="course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </Link>
-              <Link to="view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </Link>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course5} alt="course5" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course6} alt="course6" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course7} alt="course7" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course8} alt="course8" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={cx("col-4")}>
-            <div className={cx("image-course")}>
-              <a href="/course-details">
-                <img src={course9} alt="course9" />
-              </a>
-              <Link to="yeu-thich">
-                <Tippy content="Yêu thích" arrow={true} theme="custom">
-                  <div className={cx("heart-icon")}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </div>
-                </Tippy>
-              </Link>
-              <a href="/course-details">
-                <div className={cx("content-image")}>
-                  <h5>build automatic money making machine on shopee</h5>
-                </div>
-              </a>
-              <a href="/view-instructor">
-                <div className={cx("image-avatar")}>
-                  <img src={tuong} alt="tuong" />
-                  <span className={cx("info-instructor-span")}>
-                    Nguyễn Tấn Tường
-                  </span>
-                  <span className={cx("text-price")}>700,000 VND</span>
-                </div>
-              </a>
-              <Link to="add-to-cart">
-                <div className={cx("button-cart")}>
-                  <button
-                    type="button"
-                    className={cx("btn btn-primary", "button-cart")}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </Link>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

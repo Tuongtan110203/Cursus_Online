@@ -100,7 +100,7 @@ function Header() {
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
 
-    if (currentScrollPos > 400) {
+    if (currentScrollPos > 100) {
       setIsHidden(false);
       setIsFixed(true);
     } else {
@@ -383,7 +383,11 @@ function Header() {
             </a>
           </div>
           <div>
-            <button className={cx("btn btn-warning", "w-100")}>Checkout</button>
+            <a href="/check-out">
+              <button className={cx("btn btn-warning", "w-100")}>
+                Checkout
+              </button>
+            </a>{" "}
           </div>
         </div>
       </div>
