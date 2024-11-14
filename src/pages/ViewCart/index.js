@@ -183,7 +183,7 @@ function ViewCart() {
       <div className={cx("container")}>
         <div className={cx("also-like")}>
           <b>
-            <h4>You might also like</h4>
+            <h4 className={cx("title")}>You might also like</h4>
           </b>
           <div className={cx("high-rating-course")}>
             <HightRatingCourse />

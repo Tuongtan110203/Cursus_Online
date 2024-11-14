@@ -14,9 +14,12 @@ import course12 from "~/images/course12.jpg";
 import course13 from "~/images/course13.jpg";
 import course14 from "~/images/course14.jpg";
 import course15 from "~/images/course15.jpg";
+import lessonv1 from "~/images/lessonv1.png";
+import student from "~/images/student.png";
+import durationtime from "~/images/durationtime.png";
 
 //import fontawesome from "~/
-import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //import tuong
 import tuong from "~/images/tuong.jpg";
@@ -33,6 +36,13 @@ function FeaturedCourse() {
       id: 1,
       image: course10,
       title: "Build Automatic Money Making Machine on Shopee",
+      lesson: 12,
+      VideoTime: 120,
+      Level: "Beginner",
+      Chapter: 3,
+      Category: "Programming",
+      oldPrice: 99,
+      newPrice: 49,
       instructor: {
         name: "Nguyen Tan Tuong",
         image: tuong,
@@ -42,6 +52,13 @@ function FeaturedCourse() {
       id: 2,
       image: course11,
       title: "100 Days of Code: The Complete Python Pro Bootcamp",
+      lesson: 13,
+      VideoTime: 130,
+      Level: "Intermediate",
+      Category: "Designer",
+      oldPrice: 99,
+      newPrice: 49,
+      Chapter: 4,
       instructor: {
         name: "Joe Smith",
         image: avatar,
@@ -51,6 +68,13 @@ function FeaturedCourse() {
       id: 3,
       image: course12,
       title: "Become a Certified Web Developer: HTML, CSS and JavaScript",
+      lesson: 12,
+      VideoTime: 180,
+      Level: "Expert",
+      Chapter: 7,
+      Category: "Sale",
+      oldPrice: 99,
+      newPrice: 49,
       instructor: {
         name: "Joe Smith 1",
         image: anonymous,
@@ -60,6 +84,13 @@ function FeaturedCourse() {
       id: 4,
       image: course13,
       title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      lesson: 22,
+      VideoTime: 380,
+      Level: "Expert",
+      Category: "Marketing",
+      oldPrice: 99,
+      newPrice: 49,
+      Chapter: 1,
       instructor: {
         name: "Joe Smith 2",
         image: anonymous,
@@ -69,6 +100,13 @@ function FeaturedCourse() {
       id: 5,
       image: course14,
       title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      lesson: 32,
+      VideoTime: 80,
+      Level: "Beginner",
+      Category: "English",
+      oldPrice: 99,
+      newPrice: 49,
+      Chapter: 13,
       instructor: {
         name: "Joe Smith 3",
         image: anonymous,
@@ -78,6 +116,13 @@ function FeaturedCourse() {
       id: 6,
       image: course15,
       title: "A Certified Web Developer: HTML, CSS and JavaScript",
+      lesson: 2,
+      VideoTime: 380,
+      Level: "Beginner",
+      Category: "Parenting",
+      oldPrice: 99,
+      newPrice: 49,
+      Chapter: 2,
       instructor: {
         name: "Joe Smith 4",
         image: anonymous,
@@ -95,7 +140,7 @@ function FeaturedCourse() {
           {courses.map((course) => (
             <div key={course.id} className={cx("col-4")}>
               <div className={cx("image-course")}>
-                <a href="/course-details">
+                <a href="/course-details" className={cx("image-header-course")}>
                   <img src={course.image} alt="course1" />
                 </a>
                 <Link to="yeu-thich">
@@ -111,17 +156,39 @@ function FeaturedCourse() {
                     4.5 (120)
                   </div>
                 </Tippy>
+                <a href="programming" className={cx("category")}>
+                  {course.Category}
+                </a>
                 <a href="/course-details">
                   <div className={cx("content-image")}>
                     <h5>{course.title}</h5>
                   </div>
                 </a>
+                <ul className={cx("list-info-course")}>
+                  <li>
+                    <img src={lessonv1} alt="lesson" />
+                    {course.lesson} Lessons
+                  </li>
+                  <li>
+                    <img src={durationtime} alt="time" />
+                    {course.VideoTime} Minutes
+                  </li>
+                  <li>
+                    <img src={student} alt="student" />
+                    {course.Level}
+                  </li>
+                </ul>
+                <div className={cx("border-bottom")}></div>
                 <a href="view-instructor">
                   <div className={cx("image-avatar")}>
-                    <img src={course.instructor.image} alt="tuong" />
-                    <span className={cx("info-instructor-span")}>
-                      {course.instructor.name}
-                    </span>
+                    <div className={cx("course-author")}>
+                      <img src={course.instructor.image} alt="tuong" />
+                      <p> {course.instructor.name}</p>
+                    </div>
+                    <div className={cx("course-price")}>
+                      <p className={cx("old-price")}>${course.oldPrice}</p>
+                      <p className={cx("new-price")}>${course.newPrice}</p>
+                    </div>
                   </div>
                 </a>
               </div>

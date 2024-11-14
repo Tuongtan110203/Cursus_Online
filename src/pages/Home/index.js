@@ -18,6 +18,7 @@ import banner2 from "~/images/banner2.jpg";
 //import tippy
 import "tippy.js/dist/tippy.css";
 import "~/components/Layout/Header/tippyStyles.module.scss";
+
 const cx = classNames.bind(styles);
 
 function Home() {

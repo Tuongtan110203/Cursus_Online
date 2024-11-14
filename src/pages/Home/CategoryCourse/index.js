@@ -14,29 +14,98 @@ import nuoidaycon from "~/images/nuoidaycon.svg";
 import honnhangiadinh from "~/images/honnhangiadinh.svg";
 import ngoaingu from "~/images/ngoaingu.svg";
 import marketing from "~/images/marketing.svg";
+import achieve1 from "~/images/achieve1.png";
+import achieve2 from "~/images/achieve2.png";
+import achieve3 from "~/images/achieve3.png";
+import achieve4 from "~/images/achieve4.png";
+import LazyLoad from "react-lazyload";
+
 const cx = classNames.bind(styles);
 
 function CategoryCourse() {
   return (
     <div className={cx("wrapper-category")}>
-      <div className={cx("col-inner text-center mt-3", "text")}>
+      <div className={cx("trust-company")}>
+        <p className={cx("text-achievement")}>
+          Trusted by the world's best <span>Companies Achievements</span>
+        </p>
+        <div className={cx("container")}>
+          <div className={cx("row")}>
+            <div className={cx("col-3")}>
+              <LazyLoad height={100} offset={100}>
+                <div className={cx("achieve")}>
+                  <div className={cx("image")}>
+                    <img src={achieve1} alt="achieve1" />
+                  </div>
+                  <div className={cx("info")}>
+                    <h2>100k+</h2>
+                    <p>Our Happy Students </p>
+                  </div>
+                </div>
+              </LazyLoad>
+            </div>
+            <div className={cx("col-3")}>
+              <LazyLoad height={100} offset={100}>
+                <div className={cx("achieve")}>
+                  <div className={cx("image")}>
+                    <img src={achieve2} alt="achieve1" />
+                  </div>
+                  <div className={cx("info")}>
+                    <h2>50k+</h2>
+                    <p>Enrolled Learners</p>
+                  </div>
+                </div>
+              </LazyLoad>
+            </div>
+            <div className={cx("col-3")}>
+              <LazyLoad height={100} offset={100}>
+                <div className={cx("achieve")}>
+                  <div className={cx("image")}>
+                    <img src={achieve3} alt="achieve1" />
+                  </div>
+                  <div className={cx("info")}>
+                    <h2>80+</h2>
+                    <p>Expert Instructor</p>
+                  </div>
+                </div>
+              </LazyLoad>
+            </div>
+            <div className={cx("col-3")}>
+              <LazyLoad height={100} offset={100}>
+                <div className={cx("achieve")}>
+                  <div className={cx("image")}>
+                    <img src={achieve4} alt="achieve1" />
+                  </div>
+                  <div className={cx("info")}>
+                    <h2>99.99</h2>
+                    <p>Satisfiction Rate</p>
+                  </div>
+                </div>
+              </LazyLoad>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={cx("col-inner text-center mt-5", "text")}>
         <h2>What do you want to learn?</h2>
       </div>
       <div className="container">
         <div className="row">
           <a href="/" className={cx("col-md-2", "mt-full")}>
-            <div className="card">
-              <img
-                src={tinhocvanphong}
-                alt="Tin hoc van phong"
-                className={cx("card-img-top")}
-              />
-              <div className={cx("card-body")}>
-                <p className={cx("card-title text-center")}>
-                  Office Informatics
-                </p>
+            <LazyLoad height={300} offset={100}>
+              <div className="card">
+                <img
+                  src={tinhocvanphong}
+                  alt="Tin hoc van phong"
+                  className={cx("card-img-top")}
+                />
+                <div className={cx("card-body")}>
+                  <p className={cx("card-title text-center")}>
+                    Office Informatics
+                  </p>
+                </div>
               </div>
-            </div>
+            </LazyLoad>
           </a>
 
           <a href="/" className={cx("col-md-2", "mt-full")}>

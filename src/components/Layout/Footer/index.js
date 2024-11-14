@@ -14,10 +14,7 @@ import {
 import Zalo from "~/images/zalo.png";
 import Phone from "~/images/phone.png";
 import { Link } from "react-router-dom";
-import {
-  faAngleUp,
-  faChalkboardTeacher,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleUp } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles);
 
@@ -31,12 +28,26 @@ function Footer() {
     setIsChatOpen(!isChatOpen);
   };
 
+  const smoothScrollToTop = () => {
+    const scrollDuration = 500;
+    const scrollStep = -window.scrollY / (scrollDuration / 15);
+
+    const scrollInterval = setInterval(() => {
+      if (window.scrollY !== 0) {
+        window.scrollBy(0, scrollStep);
+      } else {
+        clearInterval(scrollInterval);
+      }
+    }, 15);
+  };
+
   const handleSendMessage = () => {
     if (message.trim()) {
       setChatHistory([...chatHistory, { sender: "user", text: message }]);
       setMessage("");
     }
   };
+
   useEffect(() => {
     if (isChatOpen && inputRef.current) {
       inputRef.current.focus();
@@ -176,14 +187,9 @@ function Footer() {
           </div>
         </div>
 
-        <div
-          className={cx("button-angle-up")}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
+        <div className={cx("button-angle-up")} onClick={smoothScrollToTop}>
           <div className={cx("icon-angle-up")}>
-            <a>
-              <FontAwesomeIcon icon={faAngleUp} />
-            </a>
+            <FontAwesomeIcon icon={faAngleUp} />
           </div>
         </div>
 

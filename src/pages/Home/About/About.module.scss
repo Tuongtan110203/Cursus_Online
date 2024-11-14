@@ -1,19 +1,33 @@
 .wrapper-about {
-    padding: 60px 20px;
-    max-width: 900px;
-    margin: auto;
-    background: linear-gradient(to bottom right, #f0f7ff, #cfe3ff);
+  max-width: 1200px;
+  margin: auto;
+  padding: 60px 20px;
+  background: #f9fafc;
+  border-radius: 12px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.intro-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  animation: fadeIn 1s ease-in-out;
+
+  .intro-image {
+    width: 50%;
     border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .intro-text {
+    width: 50%;
+
     h2 {
       font-size: 2.5rem;
-      text-align: center;
       color: #1d3a7c;
-      font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       position: relative;
-  
+
       &:after {
         content: "";
         position: absolute;
@@ -21,86 +35,102 @@
         height: 4px;
         background-color: #ffba08;
         bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 0;
       }
     }
-  
+
     p {
       font-size: 1.2rem;
-      line-height: 1.8;
       color: #333;
-      margin-bottom: 20px;
+      line-height: 1.8;
       text-align: justify;
     }
-  
-    .icon {
-      color: #ffba08;
-      margin-right: 8px;
-      font-size: 1.3rem;
-      vertical-align: middle;
-    }
-  
-    .intro-section {
+  }
+}
+
+.why-choose-us, .our-courses {
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: slideUp 1s ease-in-out;
+
+  h3 {
+    font-size: 2rem;
+    color: #1d3a7c;
+    margin-bottom: 15px;
+  }
+
+  .features {
+    display: flex;
+    gap: 15px;
+
+    .feature {
+      flex: 1;
       text-align: center;
-      padding: 30px;
-      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
       border-radius: 8px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-  
-    .section-why-choose-us,
-    .section-our-courses,
-    .section-meet-our-instructors {
-      margin-top: 40px;
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #ffffff;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  
-      h3 {
-        font-size: 1.8rem;
-        color: #1d3a7c;
-        margin-bottom: 15px;
-      }
-  
-      ul {
-        list-style-type: none;
-        padding-left: 0;
-  
-        li {
-          font-size: 1.1rem;
-          margin: 15px 0;
-          display: flex;
-          align-items: center;
-          color: #333;
-        }
-      }
-    }
-  
-    .link {
-      color: #1d3a7c;
-      font-weight: bold;
-      text-decoration: none;
-      transition: color 0.3s ease;
-  
+      background-color: #f4f9ff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+
       &:hover {
-        color: #ffba08;
-        text-decoration: underline;
+        transform: translateY(-5px);
       }
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .wrapper-about {
-      padding: 20px;
-      h2 {
+
+      .icon {
         font-size: 2rem;
+        color: #ffba08;
+        margin-bottom: 10px;
       }
-      p, ul li {
+
+      h4 {
+        font-size: 1.2rem;
+        color: #1d3a7c;
+      }
+
+      p {
         font-size: 1rem;
+        color: #555;
       }
     }
   }
-  
+}
+
+.explore-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #1d3a7c;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #ffba08;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
