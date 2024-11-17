@@ -65,7 +65,7 @@
         z-index: 10; 
     }
     
-    .icon {
+    .icon,.zalo-icon {
         font-size: 40px; 
         transition: transform 0.4s; 
         margin-right: 15px;
@@ -100,79 +100,18 @@
         color: white;
         margin-bottom: -15px;
         }
-    //button-contact
-    .button-contact {
-        position: fixed;
-        left: 20px;
-        bottom: 0;
-        gap: 25px;
-        margin: 35px 15px;
-        display: flex;
-        flex-direction: column;
-      
-        img {
-          border-radius: 50% !important; 
-          width: 30px;
-          height: auto;
-        }
-      
-        .button-zalo,
-        .button-phone {
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          padding: 10px;
-          margin-bottom: 20px;
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: shake 0.5s ease-in-out infinite;
-        }
-      
-        .button-zalo {
-          background-color: #0084ff; 
-          &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 132, 255, 0.5); 
-            border-radius: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0;
-            animation: wave 2s infinite ease-in-out;
-          }
-        }
-      
-        // Hiệu ứng sóng cho Phone
-        .button-phone {
-          background-color: red; 
-      
-          &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 0, 0, 0.5); 
-            border-radius: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0;
-            animation: wave 2s infinite ease-in-out;
-          }
-        }
-      }
-
+    .zalo-icon{
+      margin-bottom: 19px;
+      width: 45px;
+      color: white;
+      background-color: #3b6994;
+      border-radius: 13px;    
+    }
     //angle
     .button-angle-up{
         position: fixed;  
-        bottom: 100px;
-        right: 20px;   
+        bottom: 70px;
+        right: 24px;   
         animation: shake 0.5s ease-in-out infinite, spread 2s ease-in-out infinite;
         .icon-angle-up{
             background-color: #e65f1d;
@@ -190,8 +129,8 @@
     }
     .button-chat{
         position: fixed;  
-        bottom: 20px;
-        right: 20px;   
+        bottom: 0;
+        right: 24px;   
         animation: shake 0.5s ease-in-out infinite, spread 2s ease-in-out infinite;
         .icon-chat{
             background-color: #e65f1d;

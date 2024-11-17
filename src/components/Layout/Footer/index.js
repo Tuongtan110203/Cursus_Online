@@ -125,6 +125,13 @@ function Footer() {
                     icon={faYoutube}
                   />
                 </a>
+                <a
+                  href="https://zalo.me/0865429351"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={Zalo} alt="Zalo" className={cx("zalo-icon")} />
+                </a>
               </div>
             </div>
             <div className={cx("col")}>
@@ -172,21 +179,6 @@ function Footer() {
         <div className={cx("footer-extra")}>
           <p>© 2024 Cursus Online By Nguyen Tan Tuong. All rights reserved.</p>
         </div>
-        <div className={cx("button-contact")}>
-          <div
-            className={cx("button-zalo")}
-            onClick={() => window.open("https://zalo.me/0865429351", "_blank")}
-          >
-            <img src={Zalo} alt="Zalo" />
-          </div>
-          <div
-            className={cx("button-phone")}
-            onClick={() => window.open("https://zalo.me/0865429351", "_blank")}
-          >
-            <img src={Phone} alt="Phone" />
-          </div>
-        </div>
-
         <div className={cx("button-angle-up")} onClick={smoothScrollToTop}>
           <div className={cx("icon-angle-up")}>
             <FontAwesomeIcon icon={faAngleUp} />

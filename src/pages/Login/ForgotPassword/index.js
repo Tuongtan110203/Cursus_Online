@@ -1,12 +1,46 @@
+import { useState } from "react";
 import Header from "~/components/Layout/Header";
 import Footer from "~/components/Layout/Footer";
-//import className và scss
 import classNames from "classnames/bind";
 import styles from "./ForgotPassword.module.scss";
+import axios from "axios";
 
 const cx = classNames.bind(styles);
 
 function ForgotPassword() {
+  const [input, setInput] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Handle input change
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  // Handle form submit
+  const handleSubmit = async () => {
+    if (!input) {
+      setMessage("Please enter your username or email.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "https://localhost:7269/api/PasswordReset/request-password-reset",
+        {
+          email: input,
+        }
+      );
+      setMessage(response.data.Message || "Password reset request sent.");
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
+    }
+    setLoading(false);
+  };
+
   return (
     <div>
       <Header />
@@ -23,10 +57,18 @@ function ForgotPassword() {
             type="text"
             placeholder="Please input email or username"
             className={cx("input-forgot")}
+            value={input}
+            onChange={handleChange}
           />
-          <button type="button" className={cx("btn btn-primary")}>
-            Forgot Password
+          <button
+            type="button"
+            className={cx("btn btn-primary")}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Forgot Password"}
           </button>
+          {message && <p className={cx("message")}>{message}</p>}
         </div>
       </div>
       <Footer />

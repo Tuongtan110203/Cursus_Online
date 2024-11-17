@@ -117,6 +117,29 @@ function ViewCourseDetails() {
       },
     },
   ]);
+  const [comments, setComments] = useState([
+    {
+      userName: "John Doe",
+      date: "2024-11-14T12:00:00Z",
+      rating: 5,
+      text: "This course was amazing! The instructor explained everything clearly.",
+      replies: [],
+    },
+    {
+      userName: "Jane Smith",
+      date: "2024-11-12T10:30:00Z",
+      rating: 4,
+      text: "Good course but I think the examples could be more detailed.",
+      replies: [
+        {
+          userName: "Instructor",
+          date: "2024-11-13T11:00:00Z",
+          text: "Thank you for the feedback, Jane! I'll add more examples in the future.",
+        },
+      ],
+    },
+  ]);
+
   const [openSections, setOpenSections] = useState({
     section1: false,
     section2: false,
@@ -126,7 +149,7 @@ function ViewCourseDetails() {
   const ratingCounts = [10, 5, 2, 1, 3];
 
   const [showMoreInstructor, setShowMoreInstructor] = useState(false);
-
+  const [replyTexts, setReplyTexts] = useState({});
   const [rating, setRating] = useState(0);
   const [answer, setAnswer] = useState("");
   const [question, setQuestion] = useState({});
@@ -138,6 +161,30 @@ function ViewCourseDetails() {
     { question: "10 / 2 = ?", answer: "5" },
     { question: "4 * 2 = ?", answer: "8" },
   ];
+
+  const handleReplyChange = (e, index) => {
+    setReplyTexts({
+      ...replyTexts,
+      [index]: e.target.value,
+    });
+  };
+  const handleReply = (index) => {
+    const replyText = replyTexts[index]?.trim();
+    if (!replyText) return;
+
+    const updatedComments = [...comments];
+    updatedComments[index].replies.push({
+      userName: "You",
+      date: new Date().toISOString(),
+      text: replyText,
+    });
+
+    setComments(updatedComments);
+    setReplyTexts({
+      ...replyTexts,
+      [index]: "",
+    });
+  };
 
   useEffect(() => {
     const randomQuestion =
@@ -407,7 +454,6 @@ function ViewCourseDetails() {
                       </div>
                     </div>
                   )}
-                  {/* chapter 2 */}
                   <div
                     className={cx("content-course")}
                     onClick={() => toggleSection("section2")}
@@ -550,7 +596,6 @@ function ViewCourseDetails() {
                     </div>
                   </div>
                 </div>
-                {/* rating */}
                 <div className={cx("wrapper-rating")}>
                   <b>
                     <h5>Rating (0)</h5>
@@ -624,7 +669,6 @@ function ViewCourseDetails() {
                     </div>
                   </div>
                 </div>
-                {/* end rating */}
                 <div className={cx("student-feedback")}>
                   <h2 className={cx("title-feedback")}>Student Feedback</h2>
                   <div className={cx("rating-box")}>
@@ -665,6 +709,73 @@ function ViewCourseDetails() {
                       </div>
                     </div>
                   </div>
+                </div>
+                <div className={cx("student-comment")}>
+                  <h2 className={cx("title-comment")}>Comments</h2>
+                  <ul className={cx("comment-list")}>
+                    {comments.map((comment, index) => (
+                      <li key={index} className={cx("comment-item")}>
+                        <div className={cx("comment-header")}>
+                          <h4 className={cx("user-name")}>
+                            {comment.userName}
+                          </h4>
+                          <span className={cx("comment-date")}>
+                            {new Date(comment.date).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className={cx("comment-body")}>
+                          <Rating
+                            name="read-only"
+                            value={comment.rating}
+                            readOnly
+                            className={cx("comment-rating")}
+                          />
+                          <p className={cx("comment-text")}>{comment.text}</p>
+                        </div>
+
+                        {/* Display replies */}
+                        {comment.replies.map((reply, replyIndex) => (
+                          <div key={replyIndex} className={cx("comment-reply")}>
+                            <div className={cx("comment-header")}>
+                              <h4
+                                className={cx(
+                                  "user-name",
+                                  reply.userName === "Instructor"
+                                    ? "instructor"
+                                    : ""
+                                )}
+                              >
+                                {reply.userName}
+                              </h4>
+                              <span className={cx("comment-date")}>
+                                {new Date(reply.date).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className={cx("comment-body")}>
+                              <p className={cx("comment-text")}>{reply.text}</p>
+                            </div>
+                          </div>
+                        ))}
+
+                        {/* Reply input */}
+                        <div className={cx("reply-input")}>
+                          <input
+                            type="text"
+                            value={replyTexts[index] || ""}
+                            placeholder="Write a reply..."
+                            onChange={(e) => handleReplyChange(e, index)}
+                            className={cx("reply-input-field")}
+                          />
+                          <button
+                            onClick={() => handleReply(index)}
+                            className={cx("reply-button")}
+                          >
+                            Reply
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 {/* end student feed */}
               </div>

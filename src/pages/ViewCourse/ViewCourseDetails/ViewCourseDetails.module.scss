@@ -501,3 +501,108 @@
   
 }
 //end feedback
+//comment
+.student-comment {
+  margin-top: 40px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+
+  .title-comment {
+    font-size: 24px;
+    font-weight: 800;
+    color: #001920;
+    margin-bottom: 20px;
+  }
+
+  .comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .comment-item {
+      padding: 20px 0;
+      border-bottom: 1px solid #e0e0e0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        .user-name {
+          font-size: 18px;
+          font-weight: 700;
+          color: #001920;
+
+          &.instructor {
+            color: #0066cc;
+          }
+        }
+
+        .comment-date {
+          font-size: 14px;
+          color: #80979d;
+        }
+      }
+
+      .comment-body {
+        .comment-rating {
+          margin-bottom: 10px;
+        }
+
+        .comment-text {
+          font-size: 16px;
+          color: #4a5355;
+          line-height: 1.5;
+        }
+      }
+
+      .comment-reply {
+        margin-left: 20px;
+        border-left: 2px solid #faaf00;
+        padding-left: 20px;
+
+        .comment-text {
+          color: #804a00;
+        }
+      }
+
+      .reply-input {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+
+        .reply-input-field {
+          flex: 1;
+          padding: 8px;
+          font-size: 14px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          margin-right: 10px;
+        }
+
+        .reply-button {
+          padding: 8px 12px;
+          background-color: #0066cc;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #005bb5;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+//end comment

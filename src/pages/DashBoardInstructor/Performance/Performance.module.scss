@@ -1,0 +1,18 @@
+.wrapper {
+
+    .pie-chart{
+      margin-left: 105px;
+        width: 303px;
+        height: 303px;
+    }
+    .performance-section {
+      overflow:hidden;  
+      .title {
+        text-align: center;
+      }
+      .chart-container {
+        height: 100%;  
+      }
+    }
+  }
+  

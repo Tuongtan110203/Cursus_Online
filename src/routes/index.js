@@ -4,6 +4,7 @@ import ViewCourse from "~/pages/ViewCourse";
 import ViewCourseDetails from "~/pages/ViewCourse/ViewCourseDetails";
 import EnrollCourse from "~/pages/EnrollCourse";
 import ForgotPassword from "~/pages/Login/ForgotPassword";
+import ResetPassword from "~/pages/Login/ResetPassword";
 import RegisterStudent from "~/pages/Login/RegisterStudent";
 import RegisterInstructor from "~/pages/Login/RegisterInstructor";
 import ViewInstructor from "~/pages/ViewInstructor";
@@ -16,6 +17,8 @@ import About from "~/pages/Home/About";
 import Checkout from "~/pages/Checkout";
 import OrderReceive from "~/pages/Checkout/OrderReceive";
 import Policy from "~/pages/Policy";
+import DashBoardInstructor from "~/pages/DashBoardInstructor";
+import ProfileInstructor from "~/pages/DashBoardInstructor/ProfileInstructor";
 const publicRoutes = [
   { path: "/", component: Home, layout: Home },
   { path: "/login", component: Login, layout: Login },
@@ -23,6 +26,21 @@ const publicRoutes = [
     path: "/course-details",
     component: ViewCourseDetails,
     layout: ViewCourseDetails,
+  },
+  {
+    path: "/reset-password",
+    component: ResetPassword,
+    layout: ResetPassword,
+  },
+  {
+    path: "/profile-instructor",
+    component: ProfileInstructor,
+    layout: ProfileInstructor,
+  },
+  {
+    path: "/instructor-dash-board",
+    component: DashBoardInstructor,
+    layout: DashBoardInstructor,
   },
   {
     path: "/term-policy",

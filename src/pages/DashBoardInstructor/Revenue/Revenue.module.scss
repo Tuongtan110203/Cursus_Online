@@ -1,0 +1,54 @@
+.wrapper {
+
+    .pie-chart{
+      margin-left: 105px;
+        width: 303px;
+        height: 303px;
+    }
+    .performance-section {
+      overflow:hidden;  
+      .title {
+        text-align: center;
+      }
+      .chart-container {
+        height: 100%;  
+      }
+    }
+    .section-content{
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+          
+            th {
+              background-color: #f4f4f4;
+              font-weight: bold;
+            }
+          
+            tr:nth-child(even) {
+              background-color: #f9f9f9;
+            }
+          
+            tr:hover {
+              background-color: #f1f1f1;
+            }
+          
+            ul {
+              list-style-type: none;
+              padding: 0;
+          
+              li {
+                margin: 4px 0;
+              }
+            }
+          }
+          
+    }
+  }
+  

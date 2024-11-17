@@ -1,0 +1,128 @@
+.report-table-container {
+    margin: 20px;
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        z-index: 99;
+        pointer-events: auto;
+        position: relative; 
+      }
+    }
+    .report-table th, .report-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .report-table th {
+      background-color: #f2f2f2;
+    }
+    
+
+    
+    .search-feedback {
+      margin-bottom: 20px;
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+  
+      .search-input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+  
+      .input-search {
+        width: 100%;
+        padding: 10px 40px 10px 10px; 
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+  
+      .icon-search {
+        color: white;
+        padding: 6px;
+        height: 44px;
+        width: 35px;
+        background-color: black;
+        position: absolute;
+        right: 0px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+          color: grey;
+        }
+      }
+    }
+  
+
+    .filter-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        label {
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+      
+        .filter-row {
+          display: flex;
+          flex-direction: row;
+      
+          .from-to {
+            display: flex;
+            gap: 20px; 
+            align-items: flex-end; 
+      
+            .from,
+            .to {
+              display: flex;
+              flex-direction: column;
+              label {
+                font-weight: bold;
+                margin-bottom: 5px;
+              }
+              input[type="date"] {
+                padding: 8px;
+                height: 47px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+              }
+            }
+            .search-button {
+                padding: 8px 16px;
+                border: none;
+                background-color: black;
+                color: white;
+                border-radius: 4px;
+                font-size: 14px;
+                cursor: pointer;
+                align-self: flex-end; 
+                height: 47px; 
+                &:hover {
+                    background-color: grey;
+                  }
+              }
+          }
+        }
+      }
+  }
+  
+ 

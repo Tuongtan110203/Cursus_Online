@@ -9,8 +9,11 @@ import passwordshowup from "~/images/passwordshowup.svg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "~/Animation/Loading/Loading";
-import { faGgCircle } from "@fortawesome/free-brands-svg-icons";
 import google from "~/images/google.png";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { GoogleLogin } from "@react-oauth/google";
+
 const cx = classNames.bind(styles);
 
 function Login() {
@@ -24,40 +27,38 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       alert("Please fill in both email and password.");
       return;
     }
-
     setLoading(true);
-
     try {
       const response = await axios.post(
         "https://localhost:7269/api/Authen/login",
-        { email, password }
+        { email, password },
+        { withCredentials: true }
       );
-      if (response.data.token) {
-        const { token } = response.data;
-        const userData = JSON.parse(atob(token.split(".")[1]));
-        console.log("User Data Decoded:", userData);
+      const token = Cookies.get("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const roleId = decodedToken.RoleId;
 
-        const userName =
-          userData[
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-          ];
-        const userRole =
-          userData[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ];
-        console.log(userName);
-        console.log(userRole);
-        console.log(token);
-        sessionStorage.setItem("userName", userName);
-        sessionStorage.setItem("role", userRole);
-        sessionStorage.setItem("token", token);
-
-        navigate("/");
+        if (roleId === "1") {
+          navigate("/");
+        } else if (roleId === "2") {
+          navigate("/instructor-dash-board");
+        } else if (roleId === "3") {
+          navigate("/admin-dash-board");
+        }
+      } else {
+        alert("Token not found. Please log in again.");
       }
     } catch (error) {
       alert("Login failed. Please check your email and password.");
@@ -89,6 +90,7 @@ function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  onKeyDown={handleKeyDown}
                 />
                 <img
                   src={login}
@@ -98,13 +100,17 @@ function Login() {
               </div>
 
               <div className={cx("input-box")}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <form onSubmit={handleLogin}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    onKeyDown={handleKeyDown}
+                    autoComplete="@Sktt9123@"
+                  />
+                </form>
                 <img
                   src={showPassword ? passwordshowup : password1}
                   className={cx("icon-login")}
@@ -115,10 +121,9 @@ function Login() {
 
               <div className={cx("google-forgot-container")}>
                 <div className={cx("google-button")}>
-                  <img
-                    className={cx("google-image")}
-                    src={google}
-                    alt="google"
+                  <GoogleLogin
+                    //  onSuccess={handleGoogleLoginSuccess}
+                    onError={() => console.error("Google login failed")}
                   />
                 </div>
 
