@@ -15,7 +15,10 @@
   flex: 2;
 }
 
-
+.pagination{
+  display: flex;
+  justify-content: end;
+}
 
 .cart-table {
   margin-left: -10px;

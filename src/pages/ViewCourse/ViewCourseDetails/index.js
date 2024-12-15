@@ -2,20 +2,13 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./ViewCourseDetails.module.scss";
 //import image
-import course10 from "~/images/course10.jpg";
-import course11 from "~/images/course11.jpg";
-import course12 from "~/images/course12.jpg";
-import course13 from "~/images/course13.jpg";
-import tuong from "~/images/tuong.jpg";
-import avatar from "~/images/avatar.png";
-import anonymous from "~/images/anonymous.png";
-import lessonv1 from "~/images/lessonv1.png";
 import student from "~/images/student.png";
 import durationtime from "~/images/durationtime.png";
 // import Header và Footer
 import RelateCourse from "~/pages/ViewCourse/ViewCourseDetails/RelateCourse";
 import Header from "~/components/Layout/Header";
 import Footer from "~/components/Layout/Footer";
+import lessonv1 from "~/images/lessonv1.png";
 //import Link
 import { Link } from "react-router-dom";
 //import tippy
@@ -47,114 +40,76 @@ import {
 import chapter from "~/images/chapter.png";
 import lesson from "~/images/lesson.png";
 import quiz from "~/images/quiz.png";
-
+import { useParams } from "react-router-dom"; // import useParams
+import CourseApi from "~/API/CourseApi";
+import ChapterAPI from "~/API/ChapterAPI";
+import { useCart } from "~/Context/CartContext/CartContext";
+import CartAPI from "~/API/CartAPI";
+import BookMarkAPI from "~/API/BookMarkAPI";
+import { useBookmarks } from "~/pages/BookMark/BookmarkContext";
+import UserAPI from "~/API/UserAPI";
+import FeedBackAPI from "~/API/FeedBackAPI";
+import Pagination from "@mui/material/Pagination"; // import pagination
 const cx = classNames.bind(styles);
 
 function ViewCourseDetails() {
-  const [courses, setCourses] = useState([
-    {
-      id: 1,
-      image: course10,
-      title: "Build Automatic Money Making Machine on Shopee",
-      lesson: 12,
-      VideoTime: 120,
-      Level: "Beginner",
-      Chapter: 3,
-      Category: "Programming",
-      oldPrice: 99,
-      newPrice: 49,
-      instructor: {
-        name: "Tan Tuong",
-        image: tuong,
-      },
-    },
-    {
-      id: 2,
-      image: course11,
-      title: "100 Days of Code: The Complete Python Pro Bootcamp",
-      lesson: 13,
-      VideoTime: 130,
-      Level: "Intermediate",
-      Category: "Designer",
-      oldPrice: 99,
-      newPrice: 49,
-      Chapter: 4,
-      instructor: {
-        name: "Joe Smith",
-        image: avatar,
-      },
-    },
-    {
-      id: 3,
-      image: course12,
-      title: "Become a Certified Web Developer: HTML, CSS and JavaScript",
-      lesson: 12,
-      VideoTime: 180,
-      Level: "Expert",
-      Chapter: 7,
-      Category: "Sale",
-      oldPrice: 99,
-      newPrice: 49,
-      instructor: {
-        name: "Joe Smith 1",
-        image: anonymous,
-      },
-    },
-    {
-      id: 4,
-      image: course13,
-      title: "Become a Certified Web Developer: HTML, CSS and JavaScript",
-      lesson: 12,
-      VideoTime: 180,
-      Level: "Expert",
-      Chapter: 7,
-      Category: "Sale",
-      oldPrice: 99,
-      newPrice: 49,
-      instructor: {
-        name: "Joe Smith 1",
-        image: anonymous,
-      },
-    },
-  ]);
-  const [comments, setComments] = useState([
-    {
-      userName: "John Doe",
-      date: "2024-11-14T12:00:00Z",
-      rating: 5,
-      text: "This course was amazing! The instructor explained everything clearly.",
-      replies: [],
-    },
-    {
-      userName: "Jane Smith",
-      date: "2024-11-12T10:30:00Z",
-      rating: 4,
-      text: "Good course but I think the examples could be more detailed.",
-      replies: [
-        {
-          userName: "Instructor",
-          date: "2024-11-13T11:00:00Z",
-          text: "Thank you for the feedback, Jane! I'll add more examples in the future.",
-        },
-      ],
-    },
-  ]);
+  const [comments, setComments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); //pagination
+  const [totalPages, setTotalPages] = useState(1); // pagination
+  const pageSize = 5; // pagination
 
-  const [openSections, setOpenSections] = useState({
-    section1: false,
-    section2: false,
-    section3: false,
-  });
-  const [value, setValue] = useState(4.5);
-  const ratingCounts = [10, 5, 2, 1, 3];
-
+  const [openSections, setOpenSections] = useState({});
   const [showMoreInstructor, setShowMoreInstructor] = useState(false);
   const [replyTexts, setReplyTexts] = useState({});
   const [rating, setRating] = useState(0);
   const [answer, setAnswer] = useState("");
+  const [attachment, setAttachment] = useState(null); // Lưu file đính kèm
+  const [comment, setComment] = useState(""); // Lưu bình luận
   const [question, setQuestion] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const { courseId } = useParams(); // lấy từ ủrl
+  const [data, setData] = useState({}); // get course by id
+  const { cartData, setCartData, fetchCart, isLoading } = useCart(); // cart context
+  const [courseDiscount, setCourseDiscount] = useState([]); // get course discount by
+  const topDiscount = 2;
 
+  //  get feedback by course id
+  const getFeedbackByCourseId = async () => {
+    try {
+      const response = await FeedBackAPI().fetchFeedbackAndReplyByCourseId(
+        courseId,
+        currentPage,
+        pageSize
+      );
+      setComments(response.items);
+      setCurrentPage(response.currentPage);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getFeedbackByCourseId();
+  }, [currentPage]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+  //  end get feedback by course id
+
+  //top course discount
+  useEffect(() => {
+    const getTopCourseDiscount = async () => {
+      try {
+        const response = await CourseApi().getCourseHighRating(topDiscount);
+        setCourseDiscount(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getTopCourseDiscount();
+  }, []);
+  // end top course didscount
   const questions = [
     { question: "9 - 3 = ?", answer: "6" },
     { question: "5 + 2 = ?", answer: "7" },
@@ -162,45 +117,47 @@ function ViewCourseDetails() {
     { question: "4 * 2 = ?", answer: "8" },
   ];
 
-  const handleReplyChange = (e, index) => {
-    setReplyTexts({
-      ...replyTexts,
-      [index]: e.target.value,
-    });
-  };
-  const handleReply = (index) => {
-    const replyText = replyTexts[index]?.trim();
-    if (!replyText) return;
-
-    const updatedComments = [...comments];
-    updatedComments[index].replies.push({
-      userName: "You",
-      date: new Date().toISOString(),
-      text: replyText,
-    });
-
-    setComments(updatedComments);
-    setReplyTexts({
-      ...replyTexts,
-      [index]: "",
-    });
-  };
-
   useEffect(() => {
     const randomQuestion =
       questions[Math.floor(Math.random() * questions.length)];
     setQuestion(randomQuestion);
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!answer) {
-      setErrorMessage("Please enter an answer.");
-    } else if (answer === question.answer) {
-      setErrorMessage("");
-      alert("Submitted successfully!");
-    } else {
-      setErrorMessage("Incorrect answer, please try again.");
+  const [parentFeedbackId, setParentFeedBackId] = useState("");
+  const handleSubmit = async () => {
+    const feedbackData = {
+      Star: parentFeedbackId ? null : rating,
+      Content: comment,
+      CourseId: courseId,
+      ParentFeedbackId: parentFeedbackId,
+    };
+
+    if (!parentFeedbackId && (rating === 0 || comment.trim() === "")) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const feedbackAPI = FeedBackAPI();
+      const response = await feedbackAPI.fetchAddFeedBack(
+        feedbackData,
+        attachment
+      );
+      console.log("Feedback added successfully:", response);
+
+      setParentFeedBackId(""); // Reset parent ID
+      setComment(""); // Reset comment
+      setRating(0); // Reset rating nếu cần
+
+      await getFeedbackStar();
+      await getCourseById();
+      await getFeedbackByCourseId();
+    } catch (error) {
+      console.error("Error adding feedback:", error);
+      if (error.response) {
+        console.error("API Response Error:", error.response.data);
+      }
+      setErrorMessage("There was an error submitting your feedback.");
     }
   };
 
@@ -216,6 +173,311 @@ function ViewCourseDetails() {
   const handleClick = (index) => {
     setRating(index);
   };
+
+  // get course by id
+  const getCourseById = async () => {
+    try {
+      const response = await CourseApi().getCourseById(courseId);
+      setData(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getCourseById();
+  }, []);
+
+  const renderStars = (CalculateRating) => {
+    const fullStars = Math.floor(CalculateRating); // Số sao đầy đủ (màu vàng)
+    const halfStar = CalculateRating % 1 !== 0; // Nếu có nửa sao (màu vàng)
+    const totalStars = 5; // Tổng số sao luôn cố định là 5
+
+    let stars = [];
+
+    // Thêm các sao đầy đủ (màu vàng)
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`full-${i}`}
+          icon={faStar}
+          style={{ color: "orange" }}
+        />
+      );
+    }
+
+    // Thêm nửa sao (màu vàng) nếu có
+    if (halfStar) {
+      stars.push(
+        <FontAwesomeIcon
+          key="half"
+          icon={faStarHalfAlt}
+          style={{ color: "orange" }}
+        />
+      );
+    }
+
+    // Thêm các sao trống (màu xám) để tổng cộng là 5 sao
+    const emptyStars = totalStars - stars.length;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <FontAwesomeIcon
+          key={`empty-${i}`}
+          icon={faStar}
+          style={{ color: "gray" }}
+        />
+      );
+    }
+
+    return stars;
+  };
+  // get total chapter lesson quiz by courseId
+  const [chapterLesson, setChapterLesson] = useState({}); // chapter lesson
+  const [chapterLessonV2, setChapterLessonV2] = useState([]); // chapter lesson
+  const [chapterTitleDescription, setChapterTitleDescription] = useState([]);
+
+  const GetTotalChapterLessonQuizByCourseId = async () => {
+    try {
+      const response = await ChapterAPI().getTotalChapterLessonQuiz(courseId);
+      setChapterLesson(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    GetTotalChapterLessonQuizByCourseId();
+  }, []);
+
+  useEffect(() => {
+    const getAllChapterLessons = async () => {
+      try {
+        const promises = courseDiscount.map((course) =>
+          ChapterAPI().GetChapterLessonByCourseId(course?.courseId)
+        );
+
+        const results = await Promise.all(promises);
+
+        const mergedResults = results.flat();
+
+        setChapterLessonV2(mergedResults);
+      } catch (error) {
+        console.error("Error fetching chapters and lessons:", error);
+      }
+    };
+
+    if (courseDiscount.length > 0) {
+      getAllChapterLessons();
+    }
+  }, [courseDiscount]);
+
+  const getCourseChapterAndLessonCount = (courseId) => {
+    const courseChapters = chapterLessonV2.filter(
+      (chapter) => chapter.courseId === courseId
+    );
+
+    if (courseChapters.length === 0) {
+      return { chapterCount: 0, lessonCount: 0 };
+    }
+
+    const chapterCount = courseChapters.length;
+
+    const lessonCount = courseChapters.reduce(
+      (totalLessons, chapter) => totalLessons + chapter.lessons.length,
+      0
+    );
+    const duration = courseChapters.reduce(
+      (totalDuration, chapter) => totalDuration + (chapter.duration || 0),
+      0
+    );
+    return { chapterCount, lessonCount, duration };
+  };
+  // emd chapter
+  // cart
+  const fetchAddToCart = async (courseId) => {
+    try {
+      await CartAPI().addToCart(courseId);
+      console.log("Course added to cart successfully.");
+      fetchCart();
+    } catch (e) {
+      console.error("Error adding to cart:", e);
+    }
+  };
+  // end cart
+  //Book
+  const { bookmarkItems, fetchBookmarks } = useBookmarks();
+  const handleAddBookmark = async (courseId) => {
+    try {
+      const existingBookmark = bookmarkItems.find(
+        (item) => item.course.courseId === courseId
+      );
+
+      if (existingBookmark) {
+        await BookMarkAPI().DeleteBookMark(existingBookmark.bookmarkDetailId);
+        console.log("Bookmark removed successfully.");
+      } else {
+        await BookMarkAPI().AddBookMark(courseId);
+        console.log("Bookmark added successfully.");
+      }
+
+      fetchBookmarks();
+    } catch (error) {
+      console.error("Error updating bookmark:", error);
+    }
+  };
+  // end boookmark
+  // get user by user name
+  const [dataUser, setDataUser] = useState({}); // Lưu dữ liệu từ getUserByUserName
+  useEffect(() => {
+    if (data && data.userName) {
+      const getUserByUserName = async () => {
+        try {
+          const response = await UserAPI().getUserByUserName(data.userName);
+          setDataUser(response);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+
+      getUserByUserName();
+    }
+  }, [data]);
+  // end get user by user name
+  ///get chapter title and description
+  useEffect(() => {
+    const getChapterTitleAndDescription = async () => {
+      try {
+        const response = await ChapterAPI().getChapterTitleAndDescription(
+          courseId
+        );
+        setChapterTitleDescription(response);
+      } catch (error) {
+        console.error("Error fetching chapter title and description:", error);
+      }
+    };
+    getChapterTitleAndDescription();
+  }, []);
+  //end get chapter title and description
+  // get feedback star by courseId
+  const [feedbackStar, setFeedbackStar] = useState([]); // Khởi tạo feedbackStar là mảng rỗng
+
+  const getFeedbackStar = async () => {
+    try {
+      const response = await CourseApi().fetchFeedbackStarByCourseId(courseId);
+
+      // Kiểm tra xem phản hồi có phải là đối tượng không
+      if (typeof response === "object" && response !== null) {
+        // Chuyển đối tượng thành mảng các giá trị (count)
+        const starCounts = Object.values(response);
+        setFeedbackStar(starCounts);
+      } else {
+        console.error("Phản hồi không phải là đối tượng:", response);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getFeedbackStar();
+  }, [courseId]);
+  //feedback
+  const [showReplies, setShowReplies] = useState({}); // Track which comments' replies are visible
+  const [showReplyInput, setShowReplyInput] = useState({});
+
+  const toggleReplies = (feedbackId) => {
+    setShowReplies((prev) => ({
+      ...prev,
+      [feedbackId]: !prev[feedbackId],
+    }));
+
+    if (parentFeedbackId === feedbackId) {
+      setParentFeedBackId(""); // Nếu đang mở, đóng lại
+    } else {
+      setParentFeedBackId(feedbackId); // Gán feedbackId làm ParentFeedbackId
+    }
+  };
+  const toggleReplyInput = (feedbackId) => {
+    setShowReplyInput((prevState) => ({
+      ...prevState,
+      [feedbackId]: !prevState[feedbackId],
+    }));
+
+    // Gán ParentFeedbackId khi mở ô Reply, xóa khi đóng
+    if (parentFeedbackId === feedbackId) {
+      setParentFeedBackId(""); // Nếu đang mở, đóng lại
+    } else {
+      setParentFeedBackId(feedbackId); // Gán feedbackId làm ParentFeedbackId
+    }
+  };
+
+  const renderReplies = (replies, parentId) => {
+    return (
+      <ul className={cx("replies-list")}>
+        {replies.map((reply, replyIndex) => (
+          <li key={`${parentId}-${replyIndex}`} className={cx("reply-item")}>
+            {/* Reply Header */}
+            <div className={cx("reply-header")}>
+              <div className={cx("avatar-reply")}>
+                <img src={reply.avatar} alt="avatar"></img>
+                <h5 className={cx("user-name")}>{reply.userName}</h5>
+              </div>
+              <span className={cx("comment-date")}>
+                {new Date(reply.createdDate).toLocaleDateString()}
+              </span>
+            </div>
+
+            {/* Reply Content */}
+            <div className={cx("reply-parent")}>
+              <p className={cx("reply-text")}>{reply.content}</p>
+              <button
+                className={cx("reply-button")}
+                onClick={() => toggleReplyInput(reply.feedbackId)}
+              >
+                {showReplyInput[reply.feedbackId] ? "Cancel Reply" : "Reply"}
+              </button>
+            </div>
+
+            {/* Nested Replies */}
+            {reply.replies && reply.replies.length > 0 && (
+              <>
+                <button
+                  className={cx("toggle-replies")}
+                  onClick={() => toggleReplies(reply.feedbackId)}
+                >
+                  {showReplies[reply.feedbackId]
+                    ? `Hide Replies (${reply.replies.length})`
+                    : `Show Replies (${reply.replies.length})`}
+                </button>
+
+                {showReplies[reply.feedbackId] &&
+                  renderReplies(reply.replies, reply.feedbackId)}
+              </>
+            )}
+
+            {showReplyInput[reply.feedbackId] && (
+              <div className={cx("input-comment")}>
+                <input
+                  type="text"
+                  placeholder="Write a reply..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)} // Lấy nội dung nhập
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setParentFeedBackId(reply.feedbackId);
+                    handleSubmit();
+                  }}
+                >
+                  Send
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  //feedback
   return (
     <div>
       <Header />
@@ -225,51 +487,35 @@ function ViewCourseDetails() {
             <div className={cx("row")}>
               <div className={cx("col-8")}>
                 <div className={cx("course-detail-title")}>
-                  <Breadcrumbs aria-label="breadcrumb">
+                  <Breadcrumbs
+                    aria-label="breadcrumb"
+                    style={{ marginBottom: "15px" }}
+                  >
                     <Link underline="hover" color="inherit" to="/">
                       Home
                     </Link>
                     <Link underline="hover" color="inherit" to="/view-course">
                       Courses
                     </Link>
-                    <Typography color="white">
-                      Build an automatic money making machine on Shopee 2020
-                    </Typography>
+                    <Typography color="white">{data.courseTitle}</Typography>
                   </Breadcrumbs>
-                  <h4>
-                    Build an automatic money making machine on Shopee 2020
-                  </h4>
-                  <p>
-                    Instructions for setting up a perfect live stream. Secrets
-                    to closing deals quickly and effectively to increase sales
-                    revenue by 5-10 times without spending any advertising costs
-                  </p>
+                  <h4>{data.courseTitle} </h4>
+                  <p>{data.shortDescription}</p>
                   <span style={{ color: "orange" }}>
-                    4.5 &nbsp;
-                    <FontAwesomeIcon
-                      icon={faStar}
-                      style={{ color: "orange" }}
-                    />
-                    <FontAwesomeIcon
-                      icon={faStar}
-                      style={{ color: "orange" }}
-                    />
-                    <FontAwesomeIcon
-                      icon={faStar}
-                      style={{ color: "orange" }}
-                    />
-                    <FontAwesomeIcon
-                      icon={faStar}
-                      style={{ color: "orange" }}
-                    />
-                    <FontAwesomeIcon
-                      icon={faStarHalfAlt}
-                      style={{ color: "orange" }}
-                    />
+                    {" "}
+                    {data.averageStarRating}{" "}
+                  </span>
+                  <span style={{ color: "orange" }}>
+                    {renderStars(data.averageStarRating)}{" "}
                   </span>
                   &nbsp;
-                  <span style={{ color: "black" }}>(3999 ratings)</span>&nbsp;
-                  <span>(39999)</span>
+                  <span style={{ color: "#25d9ce" }}>
+                    {data.totalStarRating} votes
+                  </span>
+                  &nbsp;|&nbsp;
+                  <b>
+                    <span>{data.totalEnrollment} enrollments</span>
+                  </b>
                   <div className={cx("row", "mt-2")}>
                     <div className={cx("col-6")}>
                       <FontAwesomeIcon
@@ -277,7 +523,7 @@ function ViewCourseDetails() {
                         style={{ color: "white" }}
                       />
                       <span> Instructor</span>
-                      <p>Nguyen Tan Tuong</p>
+                      <p>{data.userName}</p>
                     </div>
                     <div className={cx("col-6")}>
                       <FontAwesomeIcon
@@ -285,7 +531,7 @@ function ViewCourseDetails() {
                         style={{ color: "white" }}
                       />
                       <span> Category</span>
-                      <p>Parenting</p>
+                      <p>{data.category?.categoryName || "N/A"}</p>
                     </div>
                   </div>
                   <div className={cx("create-date")}>
@@ -294,7 +540,7 @@ function ViewCourseDetails() {
                       style={{ color: "white" }}
                     />
                     &nbsp;
-                    <span>Create Date 2024/10/17</span>
+                    <span>{data.formattedCreatedDate}</span>
                   </div>
                 </div>
               </div>
@@ -311,186 +557,103 @@ function ViewCourseDetails() {
                     <h5>Introduce Video</h5>
                   </div>
                   <div className={cx("video")}>
-                    <iframe
-                      width="100%"
-                      height="400"
-                      src="https://www.youtube.com/embed/gKGITHG8dYs"
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
+                    {data.videoDemo ? (
+                      <video
+                        width="100%"
+                        height="400"
+                        controls
+                        title="Course Demo Video"
+                      >
+                        <source src={data.videoDemo} type="video/mp4" />
+                        Trình duyệt của bạn không hỗ trợ thẻ video.
+                      </video>
+                    ) : (
+                      "No Video Demo"
+                    )}
                   </div>
                 </div>
                 <div className={cx("details-course-chapter")}>
                   <div className={cx("intro-course")}>
                     <h5>Course Introduction</h5>
-                    <p>
-                      Bán hàng online ngày càng phổ biến hiện nay, nhưng càng có
-                      nhiều người bán thì thị trường cạnh tranh lại càng cao.
-                    </p>
-                    <p>
-                      Một cách thức tiếp cận khách hàng tốt nhất của việc bán
-                      hàng onlie là livestream trên các trang mạng xã hội, đặc
-                      biệt là facebook. Nhưng không phải ai cũng biết cách vận
-                      dụng livestream một cách hiệu quả.
-                    </p>
-                    <p>
-                      Để học bán hàng online hiệu quả từ việc livestream chúng
-                      ta phải có được những kiến thức cần thiết, khoa học để
-                      tiếp cận cũng như thu hút khách hàng vào sản phẩm kinh
-                      doanh của mình.
-                    </p>
-                    <p>
-                      Khóa học thực chiến tại nhà
-                      <b>“Sát thủ bán hàng Livestream”</b>
-                      do thầy Phạm Thành Long giảng dạy sẽ giúp bạn có được
-                      những kiến thức, kỹ năng cần thiết và bí quyết hiệu quả
-                      nhất để bạn có doanh thu vượt bậc từ việc livestream của
-                      mình.
-                    </p>
-                    <p>Khóa học gồm những nội dung gì?</p>
+                    <p>{data.description}</p>
                     <b>
                       <i>
-                        <p>
-                          Phần 1: Tổng hợp các yếu tố tiếp cận khách hàng khi
-                          livestream
-                        </p>
-                      </i>
-                    </b>
-                    <p>
-                      Những yếu tố khi livestream bạn phải lưu ý đẻ có thể tiếp
-                      cận được tới khách hàng của mình: cách để tạo nên bức ảnh
-                      đẹp, các bước chuẩn bị để livestream hiệu quả nhất…
-                    </p>
-                    <b>
-                      <i>
-                        <p>
-                          Phần 2: Những điều cần lưu ý để livestream hấp dẫn
-                        </p>
-                      </i>
-                    </b>
-                    <p>
-                      Chia sẻ cho bạn: 7 mục tiêu marketing trước khi livestream
-                      để bạn có thể bán được hàng tốt nhất có thể, mẹo để có thể
-                      thu hút được lượt xem, lượt share trên Facebook, chiến
-                      lược và bí kíp sử dụng clip khi làm việc với người có ảnh
-                      hưởng…
-                    </p>
-                    <b>
-                      <i>
-                        <p>Phần 3: Những mẹo cần thiết khi livestream</p>
-                      </i>
-                    </b>
-                    <p>
-                      Bí quyết để bạn luôn tự tin và thoải mái khi tiến hàng
-                      livestream bán hàng, cùng với đó là những chia sẻ về các
-                      kênh mạng xã hội mà bạn không nên bỏ lỡ khi livestream bán
-                      hàng.
-                    </p>
-                    <b>
-                      <i>
-                        <p>
-                          Phần 4: Để biến livestream thành một siêu phẩm tăng
-                          doanh thu của bạn
-                        </p>
-                      </i>
-                    </b>
-                    <p>
-                      Những yếu tố kỹ thuật để bạn có thể livestream hiệu quả
-                      nhất, cách để lên kịch bản bán hàng, nội dung ý tưởng
-                      trúng tâm lý khách hàng khi livestream, mẹo để “bắt trend”
-                      hiệu quả hỗ trợ tích cực công việc livestream bán hàng, bí
-                      quyết để có được Module nội dung thu hút, hoàn chỉnh…
-                    </p>
-                    <p>
-                      Có quá nhiều kiến thức dành cho bạn học chiến lược kinh
-                      doanh gói gọn trong một khóa học! Nhanh chóng tham gia
-                      ngay khóa học <b>“Sát thủ bán hàng Livestream”</b> của
-                      thầy{" "}
-                      <span style={{ color: "orange" }}>Phạm Thành Long</span>{" "}
-                      để trở thành Sát thủ bán hàng Livestream với các tuyệt
-                      chiêu biến livestream thành một Siêu phẩm để tăng doanh
-                      thu hoàn hảo nhất!
-                    </p>
+                        <p>What does the course include?</p>
+                      </i>{" "}
+                    </b>{" "}
+                    {chapterTitleDescription &&
+                    chapterTitleDescription.length > 0 ? (
+                      chapterTitleDescription.map((chapter, index) => (
+                        <div key={index}>
+                          <b>
+                            <i>
+                              <p>{chapter.chapterTitle || "No Chapter"}</p>
+                            </i>
+                          </b>
+                          <p>{chapter.description || "No Lesson"}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No chapters available</p>
+                    )}
                   </div>
                 </div>
                 <div className={cx("details-content-couse")}>
                   <h5>Content Course</h5>
-                  <div
-                    className={cx("content-course")}
-                    onClick={() => toggleSection("section1")}
-                  >
-                    <FontAwesomeIcon
-                      icon={openSections.section1 ? faAngleUp : faAngleDown}
-                    />
-                    <i>
-                      <b>
-                        <span> Phần 1: Tổng quan (2 bài giảng)</span>
-                      </b>
-                    </i>
-                  </div>
-                  {openSections.section1 && (
-                    <div className={cx("lesson-list")}>
-                      <div className="child-lesson">
-                        <div>
-                          <FontAwesomeIcon icon={faCirclePlay} />
-                          <span>Bài giảng 1: Giới thiệu về kinh doanh</span>
+                  {chapterTitleDescription.map((chapter, index) => {
+                    return (
+                      <div
+                        key={chapter.chapterId}
+                        className={cx("content-course")}
+                      >
+                        <div
+                          onClick={() => toggleSection(`section${index + 1}`)}
+                        >
+                          <FontAwesomeIcon
+                            icon={
+                              openSections[`section${index + 1}`]
+                                ? faAngleUp
+                                : faAngleDown
+                            }
+                          />
+                          <i>
+                            <b>
+                              <span>
+                                {" "}
+                                Chapter {index + 1}: {chapter.chapterTitle} (
+                                {chapter.lessons.length} Lessons)
+                              </span>
+                            </b>
+                          </i>
                         </div>
-                        <div>
-                          <FontAwesomeIcon icon={faCirclePlay} />
-                          <span>Bài giảng 2: Chiến lược tiếp thị hiệu quả</span>
-                        </div>
+                        {openSections[`section${index + 1}`] && (
+                          <div className={cx("lesson-list")}>
+                            <div className="child-lesson">
+                              {chapter.lessons.map((lesson, lessonIndex) => (
+                                <div key={lessonIndex} className={cx("lesson")}>
+                                  <FontAwesomeIcon icon={faCirclePlay} />
+                                  <span>{`Bài giảng ${lessonIndex + 1}: ${
+                                    lesson.lessonTitle
+                                  }`}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="time-lesson">
+                              {chapter.lessons.map((lesson, lessonIndex) => (
+                                <div
+                                  key={lessonIndex}
+                                  className={cx("child-time")}
+                                >
+                                  <FontAwesomeIcon icon={faClock} />
+                                  <span>{lesson.duration} Minutes </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="time-lesson">
-                        <div className={cx("child-time")}>
-                          <FontAwesomeIcon icon={faClock} />
-                          <span>06:09</span>
-                        </div>
-                        <div className={cx("child-time")}>
-                          <FontAwesomeIcon icon={faClock} />
-                          <span>06:09</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div
-                    className={cx("content-course")}
-                    onClick={() => toggleSection("section2")}
-                  >
-                    <FontAwesomeIcon
-                      icon={openSections.section2 ? faAngleUp : faAngleDown}
-                    />
-                    <i>
-                      <b>
-                        <span> Phần 2: Tổng quan (2 bài giảng)</span>
-                      </b>
-                    </i>
-                  </div>
-                  {openSections.section2 && (
-                    <div className={cx("lesson-list")}>
-                      <div className="child-lesson">
-                        <div>
-                          <FontAwesomeIcon icon={faCirclePlay} />
-                          <span>Bài giảng 1: Giới thiệu về kinh doanh</span>
-                        </div>
-                        <div>
-                          <FontAwesomeIcon icon={faCirclePlay} />
-                          <span>Bài giảng 2: Chiến lược tiếp thị hiệu quả</span>
-                        </div>
-                      </div>
-                      <div className="time-lesson">
-                        <div className={cx("child-time")}>
-                          <FontAwesomeIcon icon={faClock} />
-                          <span>07:09</span>
-                        </div>
-                        <div className={cx("child-time")}>
-                          <FontAwesomeIcon icon={faClock} />
-                          <span>07:09</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    );
+                  })}
                 </div>
                 <div className={cx("info-instructor")}>
                   <h5>Infomation Instructor</h5>
@@ -498,7 +661,7 @@ function ViewCourseDetails() {
                     <div className={cx("col-3")}>
                       <div className={cx("image-avatar")}>
                         <img
-                          src={tuong}
+                          src={dataUser.avatar}
                           alt="avatar"
                           className={cx("avatar")}
                         />
@@ -507,73 +670,36 @@ function ViewCourseDetails() {
                     <div className={cx("col-9")}>
                       <div className={cx("content-instructor")}>
                         <b>
-                          <span>Nguyen Tan Tuong</span>
+                          <span>{dataUser.userName}</span>
                         </b>
                         <p>
-                          Khởi đầu từ 2 bàn tay trắng và gầy gò, năm 1988, ba
-                          bán hàng tạp hóa ở chợ, còn mẹ tui xoay sở tự học cắt
-                          may ở nhà, khi tiệm may có chút uy tín, mẹ mở thêm lớp
-                          dạy cắt may. Một đứa bé gái 8 tuổi là tui năm ấy, quan
-                          sát mẹ làm suốt rồi cũng chấp chới chân đạp máy may
-                          được 1 chiếc áo 3 lỗ cho đứa em.
+                          {dataUser?.userInfo?.personalInfo
+                            ? dataUser.userInfo.personalInfo
+                            : "No personal information available."}
                         </p>
                         <p>
-                          Được vài năm thì mẹ chuyển sang kinh doanh dịch vụ
-                          ‘cho thuê bàn ghế, bát đĩa, phông bạt..’ phục vụ các
-                          đám hiếu/hỉ/sự kiện. Sau 5-6 năm ăn nên làm ra nhờ
-                          nghề này, mẹ lại ‘nâng cấp’ mô hình lên 1 tầm mới,
-                          chuyển sang bán các mặt hàng đồ gia dụng cao cấp.
+                          {dataUser?.userInfo?.describeExperience
+                            ? dataUser.userInfo.describeExperience
+                            : "No personal information available."}
                         </p>
                         <p
                           className={showMoreInstructor ? "" : cx("blur-text")}
                         >
-                          Dù làm công việc gì, mẹ luôn tìm tòi học hỏi để tạo sự
-                          khác biệt cho riêng mình.
+                          {dataUser?.userInfo?.experience
+                            ? dataUser.userInfo.experience
+                            : "No personal information available."}
                         </p>
                         {showMoreInstructor && (
                           <>
                             <p>
-                              Mẹ khởi nghiệp lại từ đầu ở lứa tuổi xấp xỉ 60.
-                              Sẵn niềm đam mê ẩm thực sạch từ lâu, mẹ là người
-                              rất tinh tế và khắt khe trong việc lựa chọn những
-                              thứ tươi, ngon, tự nhiên, và có nguồn gốc, xuất xứ
-                              rõ ràng. Từ những năm 90s, mẹ đã ‘nói không’ với
-                              gà công nghiệp, mãi sau này tui thỉnh thoảng lén
-                              mẹ ăn KFC, mới biết mùi vị của chúng :D. Mẹ cũng
-                              rất nhiều lần không hài lòng khi chúng tôi sa vào
-                              những quán vỉa hè. Chúng tui mờ mắt bởi mùi thơm,
-                              chỉ có mẹ nhìn ra những chất phụ gia, thực phẩm
-                              bẩn…Đến tận bây giờ, mẹ vẫn là nhà tài trợ thực
-                              phẩm sạch cho chị em chúng tui mỗi tháng.
-                            </p>
-                            <p>
-                              Nhận thấy yến sào là mặt hàng thực sự hữu ích cho
-                              những người sức khỏe yếu, cần được bồi bổ tăng
-                              sinh lực, đề kháng, mẹ lặn lội vô Sài Gòn (Cần
-                              Giờ), xuống Tiền Giang (Gò Công) để tìm kiếm cơ
-                              hội hợp tác với các nhà nuôi yến nhằm đảm bảo được
-                              ‘nguồn gốc’ hàng hóa rõ ràng và đáng tin cậy.
-                            </p>
-                            <p>
-                              Những thứ mẹ bán, là những thứ mẹ đã tìm hiểu rất
-                              kỹ, rất có chiều sâu; là những thứ mà cả gia đình
-                              tui đều được thưởng thức thường xuyên. Phương châm
-                              kinh doanh của mẹ 30 năm nay luôn là “Ăn thật, làm
-                              thật”. Nếu có dịp ghé thăm cửa hàng yến sào Hảo
-                              Thư (38A Quang Trung, Tp Hải Dương), dù bạn có mua
-                              hàng hay không thì luôn được tiếp đón niềm nở. Mẹ
-                              cầm tinh con chuột, trong nhà luôn chứa đầy thực
-                              phẩm, hoa quả theo mùa, bánh kẹo các loại. Chắc
-                              chắn, mẹ sẽ gọt hoa quả nhiệt tình mời khách, rót
-                              nước pha trà…biết đâu chừng, mẹ còn mời cả yến
-                              chưng cũng nên. Có vị khách đến cửa hàng, gặp mẹ
-                              thân tình hỏi mua yến sào và xúc động kể lại câu
-                              chuyện về bát yến chưng mà mẹ đã mời cô ấy 1 năm
-                              trước, cô ấy thực sự xúc động vì đó là lần đầu
-                              tiên được biết thế nào là yến sào.
+                              {dataUser?.userInfo?.jobDescription
+                                ? dataUser.userInfo.jobDescription
+                                : "No personal information available."}
                             </p>
                             <div className={cx("view-more")}>
-                              <a href="view-instructor">View More</a>
+                              <a href={`/view-instructor/${dataUser.userName}`}>
+                                View More
+                              </a>
                               <FontAwesomeIcon
                                 className={cx("icon-view-more")}
                                 icon={faChevronRight}
@@ -596,9 +722,10 @@ function ViewCourseDetails() {
                     </div>
                   </div>
                 </div>
+
                 <div className={cx("wrapper-rating")}>
                   <b>
-                    <h5>Rating (0)</h5>
+                    <h5>Rating</h5>
                   </b>
                   <div className={cx("body-rating")}>
                     <b>
@@ -632,7 +759,26 @@ function ViewCourseDetails() {
                         <textarea
                           name="input"
                           placeholder="Enter your comment..."
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
                         />
+                      </div>
+                    </div>
+                    <div className={cx("comment-rating")}>
+                      <b>
+                        <p>Your Attachment File</p>
+                      </b>
+                      <div>
+                        <input
+                          style={{ marginBottom: "15px" }}
+                          type="file"
+                          onChange={(event) => {
+                            const files = event.target.files;
+                            if (files && files.length > 0) {
+                              setAttachment(files[0]);
+                            }
+                          }}
+                        ></input>
                       </div>
                     </div>
                     <div className="check-person">
@@ -669,28 +815,33 @@ function ViewCourseDetails() {
                     </div>
                   </div>
                 </div>
+
                 <div className={cx("student-feedback")}>
                   <h2 className={cx("title-feedback")}>Student Feedback</h2>
                   <div className={cx("rating-box")}>
                     <div className={cx("row")}>
                       <div className={cx("col-4")}>
                         <div className={cx("rating-box-left")}>
-                          <h2 className={cx("title")}>4.5/5.0</h2>
-                          <Rating name="read-only" value={value} readOnly />
+                          <h2 className={cx("title")}>
+                            {data.averageStarRating}/5.0
+                          </h2>
+                          <span style={{ color: "orange" }}>
+                            {renderStars(data.averageStarRating)}{" "}
+                          </span>{" "}
                           <p className={cx("total-rating")}>
-                            Total 3 Student Ratings
+                            Total {data.totalStarRating} Student Ratings
                           </p>
                         </div>
                       </div>
                       <div className={cx("col-8")}>
                         <div className={cx("rating-box-right")}>
                           <ul className={cx("progress")}>
-                            {ratingCounts.map((count, index) => {
+                            {feedbackStar.map((count, index) => {
                               const percentage = (count / 20) * 100;
                               return (
                                 <li key={index}>
                                   <span>
-                                    <b>{5 - index} stars</b>
+                                    <b>{index + 1} star</b>
                                   </span>
                                   <div className={cx("progress-bar")}>
                                     <div
@@ -710,221 +861,280 @@ function ViewCourseDetails() {
                     </div>
                   </div>
                 </div>
+
                 <div className={cx("student-comment")}>
                   <h2 className={cx("title-comment")}>Comments</h2>
                   <ul className={cx("comment-list")}>
-                    {comments.map((comment, index) => (
+                    {comments.map((cmt, index) => (
                       <li key={index} className={cx("comment-item")}>
+                        {/* Comment Header */}
                         <div className={cx("comment-header")}>
-                          <h4 className={cx("user-name")}>
-                            {comment.userName}
-                          </h4>
+                          <div className={cx("avatar-comment")}>
+                            <img src={cmt.avatar} alt="avatar"></img>
+                            <h4 className={cx("user-name")}>{cmt.userName}</h4>
+                          </div>{" "}
                           <span className={cx("comment-date")}>
-                            {new Date(comment.date).toLocaleDateString()}
+                            {new Date(cmt.createdDate).toLocaleDateString()}
                           </span>
                         </div>
+
+                        {/* Comment Body */}
                         <div className={cx("comment-body")}>
                           <Rating
                             name="read-only"
-                            value={comment.rating}
+                            value={cmt.star || 0}
                             readOnly
                             className={cx("comment-rating")}
                           />
-                          <p className={cx("comment-text")}>{comment.text}</p>
-                        </div>
-
-                        {/* Display replies */}
-                        {comment.replies.map((reply, replyIndex) => (
-                          <div key={replyIndex} className={cx("comment-reply")}>
-                            <div className={cx("comment-header")}>
-                              <h4
-                                className={cx(
-                                  "user-name",
-                                  reply.userName === "Instructor"
-                                    ? "instructor"
-                                    : ""
-                                )}
-                              >
-                                {reply.userName}
-                              </h4>
-                              <span className={cx("comment-date")}>
-                                {new Date(reply.date).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <div className={cx("comment-body")}>
-                              <p className={cx("comment-text")}>{reply.text}</p>
-                            </div>
-                          </div>
-                        ))}
-
-                        {/* Reply input */}
-                        <div className={cx("reply-input")}>
-                          <input
-                            type="text"
-                            value={replyTexts[index] || ""}
-                            placeholder="Write a reply..."
-                            onChange={(e) => handleReplyChange(e, index)}
-                            className={cx("reply-input-field")}
-                          />
+                          {/* Button to toggle reply input */}
                           <button
-                            onClick={() => handleReply(index)}
                             className={cx("reply-button")}
+                            onClick={() => toggleReplyInput(cmt.feedbackId)}
                           >
-                            Reply
+                            {showReplyInput[cmt.feedbackId]
+                              ? "Cancel Reply"
+                              : "Reply"}
                           </button>
                         </div>
+
+                        {/* Comment Text */}
+                        <div>
+                          <p className={cx("comment-text")}>{cmt.content}</p>
+                        </div>
+
+                        {/* Replies List */}
+                        {cmt.replies && cmt.replies.length > 0 && (
+                          <div className={cx("replies-section")}>
+                            <button
+                              className={cx("toggle-replies")}
+                              onClick={() => toggleReplies(cmt.feedbackId)}
+                            >
+                              {showReplies[cmt.feedbackId]
+                                ? `Hide Replies (${cmt.replies.length})`
+                                : `Show Replies (${cmt.replies.length})`}
+                            </button>
+
+                            {/* Render Nested Replies */}
+                            {showReplies[cmt.feedbackId] &&
+                              renderReplies(cmt.replies, cmt.feedbackId)}
+                          </div>
+                        )}
+
+                        {/* Reply Input Field */}
+                        {showReplyInput[cmt.feedbackId] && (
+                          <div className={cx("input-comment")}>
+                            <input
+                              type="text"
+                              placeholder="Write a reply..."
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)} // Lấy nội dung nhập
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setParentFeedBackId(cmt.feedbackId); // Gán lại ParentFeedbackId
+                                handleSubmit(); // Gọi hàm submit
+                              }}
+                            >
+                              Send
+                            </button>
+                          </div>
+                        )}
                       </li>
                     ))}
                   </ul>
+
+                  {/* Pagination */}
+                  <div className={cx("pagination")}>
+                    <Pagination
+                      count={totalPages}
+                      page={currentPage}
+                      onChange={handlePageChange}
+                      color="primary"
+                    />
+                  </div>
                 </div>
+
                 {/* end student feed */}
               </div>
               <div className={cx("col-4", "sidebar")}>
                 <div className={cx("add-course-details")}>
                   <div className={cx("discount")}>
                     <span>
-                      <b>Old price:</b>{" "}
+                      <b>Old price: </b>{" "}
                       <strike className={cx("color-price")}>
-                        1.299.000 VND
+                        {data.price} USD
                       </strike>
                     </span>
                   </div>
                   <div className={cx("price")}>
-                    <b>New Price:</b>
-                    <span className={cx("color-price")}> 699.999 VND</span>
+                    <b>New Price: </b>
+                    <span className={cx("color-price")}>
+                      {data.newPrice} USD
+                    </span>
                   </div>
                   <div className={cx("button-add")}>
-                    <button type="button">Add To Cart</button>
+                    <button
+                      onClick={() => fetchAddToCart(data.courseId)}
+                      type="button"
+                    >
+                      Add To Cart
+                    </button>
                   </div>
                   <div className={cx("time-add")}>
                     <FontAwesomeIcon icon={faClock} />
                     <span>
-                      Thời lượng: <b>06 giờ 21 phút</b>
+                      Duration: <b>{chapterLesson.totalDuration}</b>
                     </span>
                   </div>
                   <div className={cx("sylabus-add")}>
                     <FontAwesomeIcon icon={faCirclePlay} />
                     <span>
-                      Giáo trình: <b>06 giờ 21 phút bài giảng</b>
+                      Sylabus: <b>{chapterLesson.totalDuration}</b>
                     </span>
                   </div>
                   <div className={cx("chapter-add")}>
                     <img src={chapter} alt="chapter" />
                     <span>
-                      Chapter: <b>7 Chapter</b>
+                      Chapter: <b>{chapterLesson.totalChapter} Chapter</b>
                     </span>
                   </div>
                   <div className={cx("lesson-add")}>
                     <img src={lesson} alt="lesson" />
                     <span>
-                      Lesson: <b>7 Lesson</b>
+                      Lesson: <b>{chapterLesson.totalLesson} Lesson</b>
                     </span>
                   </div>
                   <div className={cx("quizz-add")}>
                     <img src={quiz} alt="quizz" />
                     <span>
-                      Quizz: <b>17 Quizz</b>
+                      Quizz:{" "}
+                      <b>
+                        {chapterLesson.totalQuizz > 0
+                          ? chapterLesson.totalQuizz
+                          : 0}{" "}
+                        Quiz
+                      </b>
                     </span>
                   </div>
 
                   <div className={cx("time-add")}>
                     <FontAwesomeIcon icon={faClockRotateLeft} />
-                    <span>Sở hữu khóa học trọn đời</span>
+                    <b>
+                      <span>Own a lifetime course</span>
+                    </b>{" "}
                   </div>
                   <div className={cx("benefits")}>
                     <FontAwesomeIcon icon={faCertificate} />
-                    <span>Nhận chứng chỉ hoàn thành khóa học</span>
+                    <b>
+                      <span>Receive a course completion certificate</span>
+                    </b>{" "}
                   </div>
                   <div className={cx("benefits")}>
                     <FontAwesomeIcon icon={faQuestionCircle} />
-                    <span>Hỗ trợ trực tiếp từ giảng viên</span>
+                    <b>
+                      <span>Direct support from instructors</span>
+                    </b>{" "}
                   </div>
                   {/* DiscountCourse */}
                   <div className={cx("discount-course")}>
                     <div className={cx("discount-title")}>
                       <h3>Top discount courses</h3>
                     </div>
-                    {courses.map((course) => (
-                      <div key={course.id} className={cx("col-12")}>
-                        <div className={cx("image-course")}>
-                          <a
-                            href="/course-details"
-                            className={cx("image-header-course")}
-                          >
-                            <img src={course.image} alt="course1" />
-                          </a>
-                          <Link to="yeu-thich">
+                    {courseDiscount.map((course) => {
+                      const isBookmarked = bookmarkItems.some(
+                        (item) => item.course.courseId === course.courseId
+                      );
+                      const { chapterCount, lessonCount, duration } =
+                        getCourseChapterAndLessonCount(course.courseId);
+
+                      return (
+                        <div key={course.courseId} className={cx("col-12")}>
+                          <div className={cx("image-course")}>
+                            <a
+                              href={`/course-details/${course.courseId}`}
+                              className={cx("image-header-course")}
+                            >
+                              <img src={course.image} alt="course1" />
+                            </a>
                             <Tippy
-                              content="Yêu thích"
+                              content="Add to favorites"
                               arrow={true}
                               theme="custom"
                             >
-                              <div className={cx("heart-icon")}>
+                              <div
+                                className={cx("heart-icon", {
+                                  bookmarked: isBookmarked,
+                                })}
+                                onClick={() => {
+                                  handleAddBookmark(course.courseId);
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faHeart} />
                               </div>
                             </Tippy>
-                          </Link>
-                          <Tippy
-                            content="Lượt đánh giá"
-                            arrow={true}
-                            theme="custom"
-                          >
-                            <div className={cx("rating-icon")}>
-                              <FontAwesomeIcon icon={faStar} />
-                              4.5 (120)
-                            </div>
-                          </Tippy>
-                          <a href="programming" className={cx("category")}>
-                            {course.Category}
-                          </a>
-                          <a href="/course-details">
-                            <div className={cx("content-image")}>
-                              <h5>{course.title}</h5>
-                            </div>
-                          </a>
-                          <ul className={cx("list-info-course")}>
-                            <li>
-                              <img src={lessonv1} alt="lesson" />
-                              {course.lesson} Lessons
-                            </li>
-                            <li>
-                              <img src={durationtime} alt="time" />
-                              {course.VideoTime} Minutes
-                            </li>
-                            <li>
-                              <img src={student} alt="student" />
-                              {course.Level}
-                            </li>
-                          </ul>
-                          <div className={cx("border-bottom")}></div>
-                          <a href="view-instructor">
-                            <div className={cx("image-avatar")}>
-                              <div className={cx("course-author")}>
-                                <img
-                                  src={course.instructor.image}
-                                  alt="tuong"
-                                />
-                                <p>{course.instructor.name}</p>
+                            <Tippy
+                              content="Lượt đánh giá"
+                              arrow={true}
+                              theme="custom"
+                            >
+                              <div className={cx("rating-icon")}>
+                                <FontAwesomeIcon icon={faStar} />
+                                {course.averageStarRating}
                               </div>
-                              <div className={cx("course-price")}>
-                                <p className={cx("old-price")}>
-                                  ${course.oldPrice}
-                                </p>
-                                <p className={cx("new-price")}>
-                                  ${course.newPrice}
-                                </p>
+                            </Tippy>
+                            <a
+                              href={`/search?query=${course.category.categoryName}`}
+                              className={cx("category")}
+                            >
+                              {course.category?.categoryName || "N/A"}
+                            </a>
+                            <a href={`/course-details/${course.courseId}`}>
+                              <div className={cx("content-image")}>
+                                <h5>{course.courseTitle}</h5>
                               </div>
-                            </div>
-                          </a>
+                            </a>
+                            <ul className={cx("list-info-course")}>
+                              <li>
+                                <img src={lessonv1} alt="lesson" />
+                                {lessonCount} Lessons
+                              </li>
+                              <li>
+                                <img src={durationtime} alt="time" />
+                                {duration} Minutes
+                              </li>
+                              <li>
+                                <img src={student} alt="student" />
+                                {course.level}
+                              </li>
+                            </ul>
+                            <div className={cx("border-bottom")}></div>
+                            <Link to={`/view-instructor/${course.userName}`}>
+                              <div className={cx("image-avatar")}>
+                                <div className={cx("course-author")}>
+                                  <img src={course.avatar} alt="tuong" />
+                                  <p>{course.userName}</p>
+                                </div>
+                                <div className={cx("course-price")}>
+                                  <p className={cx("old-price")}>
+                                    ${course.price}
+                                  </p>
+                                  <p className={cx("new-price")}>
+                                    ${course.newPrice}
+                                  </p>
+                                </div>
+                              </div>
+                            </Link>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   {/* End discountCourse */}
                 </div>
               </div>
               <div className={cx("wrapper-relate-course")}>
-                <RelateCourse />
+                <RelateCourse categoryName={data.category?.categoryName} />
               </div>
             </div>
           </div>

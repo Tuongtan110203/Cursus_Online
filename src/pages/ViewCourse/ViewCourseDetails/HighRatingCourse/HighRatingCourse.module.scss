@@ -3,9 +3,12 @@
     position: relative;
     padding: 20px;
     height: auto;
-    width: 370px;
+    width: 375px;
     background-color: #f5f5f5;
     border-radius: 30px;
+    &:hover{
+      border: #f5912c 1px solid;
+    }
     img {
       border-radius: 10px;
       margin-top: -5px;
@@ -33,12 +36,19 @@
       top: 6px;
       right: 20px;
       font-size: 30px;
-      color: black;
+      color: black; // Default color
       cursor: pointer;
+    
       &:hover {
-        color: red;
+        color: red; // Color when hovering
+      }
+    
+      &.bookmarked {
+        color: red !important;  // Force red color when the course is bookmarked
       }
     }
+    
+    
     .rating-icon{
       color: #f9c02f;
       font-weight: 700;

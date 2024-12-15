@@ -22,10 +22,29 @@
         }
     }
     .name-profile{
-        margin-bottom: 25px;
         display: flex;
         justify-content: center;
     }
+    .balance {
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      color: #4caf50; 
+      .payout-button{
+        margin-left: 30px;
+        button{
+          border-radius: 15px;
+          background-color: rgb(255, 255, 255);
+          &:hover{
+            border: 2px solid orange;
+            
+          }
+        }
+      }
+    }
+    
     //end profile content
     //ul-content
     .list-content {
@@ -146,7 +165,6 @@
     margin: auto;
     padding: 20px;
     input {
-      margin-top: 15px;
       width: 100%; 
       padding: 0.5rem;
       font-size: 1rem;

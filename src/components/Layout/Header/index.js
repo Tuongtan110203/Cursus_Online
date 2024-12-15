@@ -10,7 +10,6 @@ import {
   faSearch,
   faHeart,
   faAngleDown,
-  faUser,
   faMoneyBillTransfer,
   faX,
   faCircleXmark,
@@ -19,9 +18,6 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "./tippyStyles.module.scss";
 import { Link } from "react-router-dom";
-//import course
-import course1 from "~/images/course1.jpg";
-import course2 from "~/images/course2.jpg";
 //import category
 import tinhocvanphong from "~/images/tinhocvanphong.svg";
 import thietke from "~/images/thietke.svg";
@@ -35,6 +31,18 @@ import nuoidaycon from "~/images/nuoidaycon.svg";
 import honnhangiadinh from "~/images/honnhangiadinh.svg";
 import ngoaingu from "~/images/ngoaingu.svg";
 import marketing from "~/images/marketing.svg";
+import axios from "axios";
+import Cookies from "js-cookie";
+import BASE_API_URL from "~/apiConfig";
+import BookMarkAPI from "~/API/BookMarkAPI";
+import { useBookmarks } from "~/pages/BookMark/BookmarkContext";
+import { useCart } from "~/Context/CartContext/CartContext";
+import { useUser } from "~/Context/UserContext/UserContext"; // use context
+import CartAPI from "~/API/CartAPI";
+import UserAPI from "~/API/UserAPI";
+import { toast } from "react-toastify"; // Import thư viện thông báo nếu cần
+import "react-toastify/dist/ReactToastify.css"; // Import CSS nếu dùng react-toastify
+import anonymous from "~/images/anonymous.png";
 
 const cx = classNames.bind(styles);
 
@@ -47,51 +55,103 @@ function Header() {
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
   const [isCartVisible, setIsCartVisible] = useState(false);
   const searchInputRef = useRef(null);
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "First Course",
-      price: 799999,
-      quantity: 1,
-      image: course1,
-    },
-    {
-      id: 2,
-      name: "Second Course",
-      price: 599999,
-      quantity: 1,
-      image: course2,
-    },
-  ]);
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
+  const { bookmarkItems, fetchBookmarks } = useBookmarks();
+  const { userInfo, setUserInfo } = useUser();
+  const [profileUser, setProfileUser] = useState({});
+  //cart
+  const { cartData, setCartData, fetchCart, isLoading } = useCart();
+  useEffect(() => {
+    if (!cartData?.cartItems || cartData.cartItems.length === 0) {
+      console.log("Cart is empty");
+    }
+  }, [cartData.cartItems]);
+  // end cart
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
+  //notiffication
+  const handleViewProfileClick = () => {
+    const token = Cookies.get("authToken");
+    if (!token) {
+      toast.info("No profile for guest. Please login to access your profile.");
+      return;
+    }
 
+    // Nếu đã đăng nhập, chuyển hướng đến trang hồ sơ
+    navigate("/profile");
+  };
+  //end notification
+  //book mark
+  useEffect(() => {
+    const getBookMarkForUser = async () => {
+      try {
+        const data = await BookMarkAPI().GetBookMarkByUserName();
+        fetchBookmarks(data);
+      } catch (error) {
+        console.error("Failed to fetch bookmarks:", error);
+      }
+    };
+
+    getBookMarkForUser();
+  }, []);
+  //end bookmark
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
       window.location.href = `/search?query=${encodeURIComponent(searchQuery)}`;
     }
   };
 
+  //logout
+  const LogoutAccount = async () => {
+    try {
+      const response = await axios.post(`${BASE_API_URL}/Authen/logout`, null, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("authToken")}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        Cookies.remove("authToken");
+
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Logout error:", error.response?.data || error.message);
+      setError(
+        error.response?.data?.message || "Failed to logout. Please try again."
+      );
+    }
+  };
+
+  //end logout
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
 
+  // get profile user
+
+  const getProfileUser = async () => {
+    try {
+      const response = await UserAPI().getProfileByUserName();
+      setUserInfo(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getProfileUser();
+  }, []);
+  //get profile user
   useEffect(() => {
     if (isLogoSearchVisible && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [isLogoSearchVisible]);
-
-  const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-  const handleRemoveItem = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
 
   const handleSearchClick = () => {
     setIsLogoSearchVisible(!isLogoSearchVisible);
@@ -126,6 +186,94 @@ function Header() {
     };
   }, []);
 
+  //call api category
+  useEffect(() => {
+    const axiosCategories = async () => {
+      try {
+        const token = Cookies.get("authToken");
+        const response = await axios.get(`${BASE_API_URL}/Category`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+        setCategories(response.data);
+      } catch (error) {
+        setError(
+          error.response?.data?.message ||
+            "An error occurred. Please try again."
+        );
+        console.error("API Error:", error);
+      }
+    };
+    axiosCategories();
+  }, []);
+
+  const categoryImages = {
+    "Office Information": tinhocvanphong,
+    Design: thietke,
+    "Business-Startup": kinhdoanhkhoinghiep,
+    Personal: phattriencanhan,
+    Sale: sale,
+    IT: it,
+    "Sexual Health": suckhoegioitinh,
+    Lifestyle: phongcachsong,
+    Parenting: nuoidaycon,
+    "Marriage-Family": honnhangiadinh,
+    English: ngoaingu,
+    Marketing: marketing,
+  };
+  const handleCategoryClick = (Query) => {
+    axios
+      .get(
+        `${BASE_API_URL}/Course/Courses-active?Query=${encodeURIComponent(
+          Query
+        )}&page=1&pageSize=20`
+      )
+      .then((response) => {
+        navigate(`/search?query=${encodeURIComponent(Query)}`);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
+  };
+
+  //end callapi category
+
+  //delete cart
+  const removeCartItems = async (courseId) => {
+    const updatedCartItems = cartData.cartItems.filter(
+      (item) => item.courseId !== courseId
+    );
+    const updatedTotalItems = updatedCartItems.length;
+
+    const updatedSubTotal = updatedCartItems.reduce(
+      (total, item) => total + item.price,
+      0
+    );
+    const updatedTotalDiscount = updatedCartItems.reduce(
+      (total, item) => total + (item.discount / 100) * item.price,
+      0
+    );
+    const updatedTotalPrice = updatedSubTotal - updatedTotalDiscount;
+
+    setCartData({
+      cartItems: updatedCartItems,
+      totalItems: updatedTotalItems,
+      subTotal: updatedSubTotal,
+      totalDiscount: updatedTotalDiscount,
+      totalPrice: updatedTotalPrice,
+    });
+
+    try {
+      const response = await CartAPI().removeFromCart(courseId);
+      if (response.message === "Item removed from cart successfully") {
+        await fetchCart();
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
+  };
   return (
     <>
       <div className={cx("overlay", { active: isCartVisible })}></div>
@@ -143,7 +291,7 @@ function Header() {
             <div>
               <button className={cx("dropdown-button")}>
                 <FontAwesomeIcon icon={faList} className={cx("icon")} />
-                course categories
+                Course Categories
                 <FontAwesomeIcon
                   className={cx("icon", "icon-angle-down")}
                   icon={faAngleDown}
@@ -151,78 +299,26 @@ function Header() {
               </button>
             </div>
             <ul className={cx("dropdown-content")}>
-              <li>
-                <a href="/office-information">
-                  <img src={tinhocvanphong} alt="tinhocvanphong" /> Office
-                  Information
-                </a>
-              </li>
-              <li>
-                <a href="/design">
-                  <img src={thietke} alt="thietke" />
-                  Design
-                </a>
-              </li>
-              <li>
-                <a href="/business-startup">
-                  <img src={kinhdoanhkhoinghiep} alt="kinhdoanhkhoinghiep" />
-                  Business-Startup
-                </a>
-              </li>
-              <li>
-                <a href="/personal">
-                  <img src={phattriencanhan} alt="phattriencanhan" />
-                  Personal
-                </a>
-              </li>
-              <li>
-                <a href="/sale">
-                  <img src={sale} alt="sale" />
-                  Sale
-                </a>
-              </li>
-              <li>
-                <a href="/it">
-                  <img src={it} alt="it" />
-                  IT
-                </a>
-              </li>
-              <li>
-                <a href="/sexual-health">
-                  <img src={suckhoegioitinh} alt="suckhoegioitinh" />
-                  Sexual health
-                </a>
-              </li>
-              <li>
-                <a href="/lifestyle">
-                  <img src={phongcachsong} alt="phongcachsong" />
-                  Lifestyle
-                </a>
-              </li>
-              <li>
-                <a href="/parenting">
-                  <img src={nuoidaycon} alt="nuoidaycon" />
-                  Parenting
-                </a>
-              </li>
-              <li>
-                <a href="/marriage-family">
-                  <img src={honnhangiadinh} alt="honnhangiadinh" />
-                  Marriage-family
-                </a>
-              </li>
-              <li>
-                <a href="/english">
-                  <img src={ngoaingu} alt="ngoaingu" />
-                  English
-                </a>
-              </li>
-              <li>
-                <a href="/marketing">
-                  <img src={marketing} alt="marketing" />
-                  Marketing
-                </a>
-              </li>
+              {categories?.map((category) => (
+                <li key={category.categoryId}>
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleCategoryClick(category.categoryName);
+                    }}
+                    className={cx("category-button")}
+                  >
+                    <img
+                      src={
+                        categoryImages[category.categoryName] || tinhocvanphong
+                      }
+                      alt={category.categoryName}
+                    />
+                    {category.categoryName}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           <Tippy content="Trang chủ" arrow={true} theme="custom">
@@ -257,8 +353,10 @@ function Header() {
                 onClick={handleCartIconClick}
               >
                 <FontAwesomeIcon icon={faShoppingCart} className={cx("icon")} />
-                {cartItems.length > 0 && (
-                  <span className={cx("item-count")}>{cartItems.length}</span>
+                {cartData.cartItems.length > 0 && (
+                  <span className={cx("item-count")}>
+                    {cartData.cartItems.length}
+                  </span>
                 )}
               </button>
             </Tippy>
@@ -268,6 +366,11 @@ function Header() {
               <Tippy content="Yêu thích" arrow={true} theme="custom">
                 <button className={cx("book-mark-button")}>
                   <FontAwesomeIcon icon={faHeart} className={cx("icon")} />
+                  {bookmarkItems?.length > 0 && (
+                    <span className={cx("item-count")}>
+                      {bookmarkItems.length}
+                    </span>
+                  )}
                 </button>
               </Tippy>
             </a>
@@ -288,20 +391,39 @@ function Header() {
                 className={cx("profile-button")}
                 onClick={handleUserIconClick}
               >
-                <FontAwesomeIcon icon={faUser} className={cx("icon")} />
+                {userInfo?.avatar ? (
+                  <img
+                    src={userInfo.avatar}
+                    className={cx("avatar-profile")}
+                    alt="profile"
+                  />
+                ) : (
+                  <img
+                    src={anonymous}
+                    className={cx("avatar-profile")}
+                    alt="profile"
+                  />
+                )}
               </button>
             </Tippy>
 
             {isUserMenuVisible && (
               <ul className={cx("user-dropdown")}>
                 <li>
-                  <a href="/profile">View Profile</a>
+                  <button
+                    className={cx("view-profile")}
+                    onClick={handleViewProfileClick}
+                  >
+                    View Profile
+                  </button>
                 </li>
                 <li>
                   <a href="/login">Login</a>
                 </li>
                 <li>
-                  <a href="/logout">Logout</a>
+                  <a href="/" onClick={LogoutAccount}>
+                    Logout
+                  </a>
                 </li>
               </ul>
             )}
@@ -339,8 +461,8 @@ function Header() {
         <h4 className={cx("title-cart")}>Giỏ Hàng</h4>
 
         <div className={cx("container")}>
-          {cartItems.map((item) => (
-            <div className={cx("shopping-cart-content")} key={item.id}>
+          {cartData.cartItems.map((item) => (
+            <div className={cx("shopping-cart-content")} key={item.courseId}>
               <div className={cx("row")}>
                 <div className={cx("col-4")}>
                   <img
@@ -351,10 +473,16 @@ function Header() {
                 </div>
                 <div className={cx("col-7")}>
                   <div className={cx("shopping-content-body")}>
-                    <p>{item.name}</p>
-                    <span>
-                      {item.quantity} x {item.price.toLocaleString()} VND
-                    </span>
+                    <p>{item.courseTitle}</p>
+                    <del>
+                      <span> {item.price.toLocaleString()} USD</span>
+                    </del>
+                    <b>
+                      <span style={{ fontWeight: 900 }}>
+                        {" "}
+                        {item.newPrice.toLocaleString()} USD
+                      </span>
+                    </b>
                   </div>
                 </div>
                 <div className={cx("col-1")}>
@@ -362,19 +490,24 @@ function Header() {
                     <FontAwesomeIcon
                       className={cx("fa-remove")}
                       icon={faCircleXmark}
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => removeCartItems(item.courseId)}
                     />
                   </div>
                 </div>
               </div>
             </div>
           ))}
-
           <div className={cx("total-amount")}>
-            <h5>Tổng số tiền: {totalAmount.toLocaleString()} VND</h5>
+            <h5>SubToTal Price: {cartData.subTotal} USD</h5>
+          </div>
+          <div className={cx("total-amount")}>
+            <h5>ToTal Discount: {cartData.totalDiscount} USD</h5>
+          </div>
+          <div className={cx("total-amount")}>
+            <h5>ToTal Price: {cartData.totalPrice} USD</h5>
           </div>
           <div>
-            <a href="view-cart">
+            <a href="/view-cart">
               <button
                 className={cx("btn btn-primary", "mb-2", "mt-2", "w-100")}
               >

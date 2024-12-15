@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./viewCart.module.scss";
 // import Header và Footer
@@ -14,68 +14,50 @@ import { Breadcrumbs, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 //import images
 import checkout from "~/images/checkout.png";
+import { useCart } from "~/Context/CartContext/CartContext";
+import CartAPI from "~/API/CartAPI";
+
 const cx = classNames.bind(styles);
 
 function ViewCart() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "First Course",
-      instructor: "Instructor A",
-      price: 799999,
-      quantity: 1,
-      image: require("~/images/course1.jpg"),
-    },
-    {
-      id: 2,
-      name: "Second Course",
-      instructor: "Instructor B",
-      price: 599999,
-      quantity: 1,
-      image: require("~/images/course2.jpg"),
-    },
-    {
-      id: 3,
-      name: "Third Course",
-      instructor: "Instructor C",
-      price: 599999,
-      quantity: 1,
-      image: require("~/images/course2.jpg"),
-    },
-    {
-      id: 4,
-      name: "Four Course",
-      instructor: "Instructor D",
-      price: 699999,
-      quantity: 1,
-      image: require("~/images/course1.jpg"),
-    },
-    {
-      id: 5,
-      name: "Five Course",
-      instructor: "Instructor E",
-      price: 799999,
-      quantity: 1,
-      image: require("~/images/course2.jpg"),
-    },
-    {
-      id: 6,
-      name: "Six Course",
-      instructor: "Instructor F",
-      price: 799999,
-      quantity: 1,
-      image: require("~/images/course2.jpg"),
-    },
-  ]);
+  const { cartData, setCartData, fetchCart, isLoading } = useCart();
 
-  const handleRemoveItem = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const removeCartItems = async (courseId) => {
+    const updatedCartItems = cartData.cartItems.filter(
+      (item) => item.courseId !== courseId
+    );
+    const updatedTotalItems = updatedCartItems.length;
+    const updatedSubTotal = updatedCartItems.reduce(
+      (total, item) => total + item.price,
+      0
+    );
+    const updatedTotalDiscount = updatedCartItems.reduce(
+      (total, item) => total + (item.discount / 100) * item.price,
+      0
+    );
+    const updatedTotalPrice = updatedSubTotal - updatedTotalDiscount;
+
+    setCartData({
+      cartItems: updatedCartItems,
+      totalItems: updatedTotalItems,
+      subTotal: updatedSubTotal,
+      totalDiscount: updatedTotalDiscount,
+      totalPrice: updatedTotalPrice,
+    });
+
+    try {
+      const response = await CartAPI().removeFromCart(courseId);
+      if (response.message === "Item removed from cart successfully") {
+        await fetchCart();
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
   };
-
-  const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
 
   return (
     <div className={cx("view-cart-container")}>
@@ -95,37 +77,45 @@ function ViewCart() {
                   <th className="col-1">Image</th>
                   <th className="col-4">Course Name</th>
                   <th className="col-3">Instructor</th>
-                  <th className="col-2">Price</th>
+                  <th className="col-2">Old Price</th>
+                  <th className="col-2">New Price</th>
                   <th className="col-1">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id}>
-                    <td className="col-1">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className={cx("table-image")}
-                      />
-                    </td>
-                    <td className="col-4">{item.name}</td>
-                    <td className="col-3">{item.instructor}</td>
-                    <td className="col-3">{item.price.toLocaleString()} VND</td>
-                    <td className="col-1">
-                      <FontAwesomeIcon
-                        icon={faCircleXmark}
-                        className={cx("icon")}
-                        onClick={() => handleRemoveItem(item.id)}
-                      />
-                    </td>
+                {cartData.cartItems && cartData.cartItems.length > 0 ? (
+                  cartData.cartItems.map((item) => (
+                    <tr key={item.courseId}>
+                      <td className="col-1">
+                        <img
+                          src={item.image}
+                          alt={item.courseTitle}
+                          className={cx("table-image")}
+                        />
+                      </td>
+                      <td className="col-7">{item.courseTitle}</td>
+                      <td className="col-2">{item.instructorName}</td>
+                      <td className="col-1">${item.price}</td>
+                      <td className="col-1">${item.newPrice}</td>
+                      <td className="col-1">
+                        <FontAwesomeIcon
+                          icon={faCircleXmark}
+                          onClick={() => removeCartItems(item.courseId)}
+                          className={cx("icon")}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6">Your cart is empty.</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
             <div className={cx("continue-shopping-button")}>
               <b>
-                <a href="/">
+                <a href="/view-course">
                   <FontAwesomeIcon icon={faArrowLeftLong} />
                   Continue shopping
                 </a>
@@ -139,20 +129,20 @@ function ViewCart() {
                 <b>Order Summary</b>
               </h5>
               <div className={cx("summary-item")}>
+                <span>Total Course:</span>
+                <span>{cartData.totalItems}</span>
+              </div>
+              <div className={cx("summary-item")}>
                 <span>Subtotal:</span>
-                <span>{totalAmount.toLocaleString()} VND</span>
+                <span>{cartData.subTotal} USD</span>
               </div>
               <div className={cx("summary-item")}>
-                <span>Percent Discount:</span>
-                <span>0%</span>
-              </div>
-              <div className={cx("summary-item")}>
-                <span>Discount:</span>
-                <span>- 0 VND</span>
+                <span>ToTal Discount:</span>
+                <span>- {cartData.totalDiscount} USD</span>
               </div>
               <div className={cx("summary-item")}>
                 <span>Total:</span>
-                <span>{totalAmount.toLocaleString()} VND</span>
+                <span>{cartData.totalPrice} USD</span>
               </div>
               <div className={cx("discount-code")}>
                 <input

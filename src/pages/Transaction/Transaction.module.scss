@@ -1,5 +1,6 @@
 .wrapper-transaction {
     padding: 20px;
+    margin-bottom: 102px;
   }
   
   .transaction-table {
@@ -31,4 +32,24 @@
       color: red;
     }
   }
+  .no-transaction {
+    text-align: center;
+    padding: 50px 20px;
+    color: #ff6b6b; /* Màu nổi bật */
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #fff5f5; /* Màu nền nhẹ */
+    border: 2px dashed #ff6b6b; /* Đường viền nổi bật */
+    border-radius: 10px;
+    margin-top: 20px;
+  
+    p {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px; /* Khoảng cách giữa icon và chữ */
+    }
+  }
+  
   

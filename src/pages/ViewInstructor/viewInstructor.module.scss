@@ -36,7 +36,7 @@
     background: #fff;
     .image{
       img{
-        height: 450px;
+        height: 555px;
         max-width: 100%;
       }
     }
@@ -148,12 +148,18 @@
       top: 6px;
       right: 20px;
       font-size: 30px;
-      color: black;
+      color: black; // Default color
       cursor: pointer;
+    
       &:hover {
-        color: red;
+        color: red; // Color when hovering
+      }
+    
+      &.bookmarked {
+        color: red !important;  // Force red color when the course is bookmarked
       }
     }
+    
     .rating-icon{
       color: #f9c02f;
       font-weight: 700;

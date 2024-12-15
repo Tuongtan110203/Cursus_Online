@@ -6,14 +6,9 @@ import chronometer from "~/images/chronometer.png";
 import why from "~/images/why.png";
 import students from "~/images/students.png";
 import shape1 from "~/images/shape-1.png";
-import teacher1 from "~/images/teacher-1.png";
-import teacher2 from "~/images/teacher-2.png";
-import teacher3 from "~/images/teacher-3.png";
-import teacher4 from "~/images/teacher-4.png";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookSquare,
   faInstagram,
@@ -22,20 +17,25 @@ import {
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import DashBoardApi from "~/API/DashBoardAPI";
+import UserAPI from "~/API/UserAPI";
+import { useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 function FeaturedInstructors() {
-  const [instructors, setInstructors] = useState([
-    { id: 1, image: teacher1, name: "Jenny Wilson", major: "UI Design" },
-    { id: 2, image: teacher2, name: "Jenny Nguyen", major: "Programming" },
-    { id: 3, image: teacher3, name: "Jenny Wall", major: "Marketing" },
-    { id: 4, image: teacher4, name: "Jenny Pham", major: "Sales" },
-  ]);
-
+  const [instructors, setInstructors] = useState([]);
+  const [dataTotal, setDataTotal] = useState({});
   const [showContact, setShowContact] = useState(null);
+  const navigate = useNavigate();
 
   const handleContactClick = (id) => {
     setShowContact(showContact === id ? null : id);
+  };
+  const handleInstructorChange = (event) => {
+    const selectedInstructor = event.target.value;
+    if (selectedInstructor) {
+      navigate(`/view-instructor/${selectedInstructor.toLowerCase()}`);
+    }
   };
   const settings = {
     dots: true,
@@ -62,6 +62,33 @@ function FeaturedInstructors() {
       },
     ],
   };
+  //total instructor student course enroll
+  useEffect(() => {
+    const getToTalInstructorStudentCourseEnroll = async () => {
+      try {
+        const response =
+          await DashBoardApi().getToTalInstructorStudentCourseEnroll();
+        setDataTotal(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getToTalInstructorStudentCourseEnroll();
+  }, []);
+  //end total instructor student course enroll
+  //Get all instructor
+  useEffect(() => {
+    const getAllInstructor = async () => {
+      try {
+        const response = await UserAPI().getAllInstructor();
+        setInstructors(response);
+      } catch (error) {
+        console.error("Error fetching instructor:", error);
+      }
+    };
+    getAllInstructor();
+  }, []);
+  //end instructor
   return (
     <section className={cx("section-why-and-instructor")}>
       <section className={cx("section-why")}>
@@ -110,13 +137,13 @@ function FeaturedInstructors() {
                   <img src={why} alt="background-why" />
                 </div>
                 <div className={cx("expert-tutor")}>
-                  <span>80+</span>
+                  <span>{dataTotal.totalInstructors}+</span>
                   <p>Expert Tutor</p>
                 </div>
                 <div className={cx("total-student")}>
                   <span></span>
                   <p>Students Enroll</p>
-                  <h2 className={cx("student")}>15K+</h2>
+                  <h2 className={cx("student")}>{dataTotal.totalEnrolls}+</h2>
                   <img src={students} alt="students" />
                 </div>
               </div>
@@ -140,56 +167,75 @@ function FeaturedInstructors() {
             <div className={cx("col-6")}>
               <div className={cx("instructor-category")}>
                 <img src={shape1} alt="shape1" />
-                <select className={cx("select-category")}>
-                  <option value="1">All</option>
-                  <option value="2">Computer Science</option>
-                  <option value="3">Business</option>
-                  <option value="4">Healthcare</option>
-                  <option value="5">Engineering</option>
-                  <option value="6">Marketing</option>
-                  <option value="7">Other</option>
+
+                <select
+                  className={cx("select-category")}
+                  onChange={handleInstructorChange}
+                >
+                  <option value="">Select Instructor</option>
+                  {instructors.map((instructor) => (
+                    <option
+                      key={instructor.userName}
+                      value={instructor.userName}
+                    >
+                      {instructor.userName}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
           </div>
           <Slider {...settings}>
             {instructors.map((ins) => (
-              <div key={ins.id} className={cx("col-3")}>
+              <div key={ins.userName} className={cx("col-3")}>
                 <div className={cx("information-instructor")}>
                   <div className={cx("image-instructor")}>
-                    <a href="/view-instructor">
-                      <img src={ins.image} alt="image-instructor" />
+                    <a href={`/view-instructor/${ins.userName.toLowerCase()}`}>
+                      <img src={ins.avatar} alt="image-instructor" />
                     </a>
-                    <h4>{ins.name}</h4>
-                    <p>{ins.major}</p>
+                    <a href={`/view-instructor/${ins.userName.toLowerCase()}`}>
+                      <h4>{ins.userName}</h4>
+                    </a>
+                    <b>
+                      <p style={{ color: "#FF3158", fontWeight: 700 }}>
+                        {ins.userInfo.occupation}
+                      </p>
+                    </b>
                   </div>
                   <div
-                    className={cx("share", { active: showContact === ins.id })}
-                    onClick={() => handleContactClick(ins.id)}
+                    className={cx("share", {
+                      active: showContact === ins.userName,
+                    })}
+                    onClick={() => handleContactClick(ins.userName)}
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </div>
-                  {showContact === ins.id && (
+                  {showContact === ins.userName && (
                     <div className={cx("show-contact")}>
                       <ul>
-                        <li>
-                          <a
-                            href="https://www.instagram.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="https://www.facebook.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebookSquare} />
-                          </a>
-                        </li>
+                        {ins.userInfo.facebook && (
+                          <li>
+                            <a
+                              href={ins.userInfo.facebook}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <FontAwesomeIcon icon={faFacebookSquare} />
+                            </a>
+                          </li>
+                        )}
+
+                        {ins.userInfo.instagram && (
+                          <li>
+                            <a
+                              href={ins.userInfo.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <FontAwesomeIcon icon={faInstagram} />
+                            </a>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   )}

@@ -60,6 +60,7 @@ a {
   }
   //image course
   .image-course {
+    min-height: 530px;
     margin-bottom: 30px;
     position: relative;
     padding: 20px;
@@ -67,6 +68,9 @@ a {
     width: 400px;
     background-color: white;
     border-radius: 30px;
+    &:hover{
+      border: #f5912c solid 2px;
+    }
     img {
       border-radius: 10px;
       margin-top: -5px;

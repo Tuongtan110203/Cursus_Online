@@ -16,16 +16,24 @@ import Profile from "~/pages/Login/Profile";
 import About from "~/pages/Home/About";
 import Checkout from "~/pages/Checkout";
 import OrderReceive from "~/pages/Checkout/OrderReceive";
+import OrderReceiveCheckOut from "~/pages/Checkout/OrderReceiveCheckOut";
+
 import Policy from "~/pages/Policy";
 import DashBoardInstructor from "~/pages/DashBoardInstructor";
 import ProfileInstructor from "~/pages/DashBoardInstructor/ProfileInstructor";
 const publicRoutes = [
   { path: "/", component: Home, layout: Home },
   { path: "/login", component: Login, layout: Login },
+
   {
-    path: "/course-details",
+    path: "/course-details/:courseId",
     component: ViewCourseDetails,
     layout: ViewCourseDetails,
+  },
+  {
+    path: "/order-received-checkout",
+    component: OrderReceiveCheckOut,
+    layout: OrderReceiveCheckOut,
   },
   {
     path: "/reset-password",
@@ -104,7 +112,7 @@ const publicRoutes = [
     layout: RegisterInstructor,
   },
   {
-    path: "/view-instructor",
+    path: "/view-instructor/:instructorName",
     component: ViewInstructor,
     layout: ViewInstructor,
   },

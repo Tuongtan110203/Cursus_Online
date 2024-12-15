@@ -7,6 +7,7 @@
     line-height: 1.5;
   }
   .image-course {
+    min-height: 543px;
     margin-bottom: 30px;
     position: relative;
     padding: 20px;
@@ -38,13 +39,17 @@
     }
     .heart-icon {
       position: absolute;
-      top: 6px;
+      top: 7px;
       right: 20px;
       font-size: 30px;
       color: black;
-      cursor: pointer;
+      cursor: pointer;    
       &:hover {
-        color: red;
+        color: red; 
+      }
+    
+      &.bookmarked {
+        color: red !important; 
       }
     }
     .rating-icon{

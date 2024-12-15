@@ -3,22 +3,21 @@ import classNames from "classnames/bind";
 import styles from "./registerInstructor.module.scss";
 //import Header Footer
 import Button from "@mui/material/Button";
+import axios from "axios";
 
 const cx = classNames.bind(styles);
 function RegisterInstructor() {
   const [formData, setFormData] = useState({
-    userName: "",
-    roleID: 2,
-    password: "",
-    email: "",
-    phone: "",
-    address: "",
-    fullName: "",
-    avatar: null,
-    Certificate: null,
-    dob: "",
+    UserName: "",
+    RoleId: 2,
+    Password: "",
+    Email: "",
+    PhoneNumber: "",
+    Address: "",
+    FullName: "",
+    Avatar: null,
+    DOB: "",
   });
-  const defaultAvatar = "~/images/avatar.png";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,20 +26,41 @@ function RegisterInstructor() {
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, avatar: file });
+    setFormData({ ...formData, Avatar: file });
   };
-  const handleCertificateChange = (e) => {
-    const file = e.target.files[0];
-    setFormData({ ...formData, Certificate: file });
-  };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formSubmitData = {
-      ...formData,
-      avatar: formData.avatar || defaultAvatar,
-    };
-    console.log(formSubmitData);
+    const formDataTosend = new FormData();
+    formDataTosend.append("UserName", formData.UserName);
+    formDataTosend.append("RoleId", formData.RoleId);
+    formDataTosend.append("Password", formData.Password);
+    formDataTosend.append("Email", formData.Email);
+    formDataTosend.append("PhoneNumber", formData.PhoneNumber);
+    formDataTosend.append("Address", formData.Address);
+    formDataTosend.append("FullName", formData.FullName);
+    if (formData.Avatar) {
+      formDataTosend.append("Avatar", formData.Avatar);
+    }
+    formDataTosend.append("DOB", formData.DOB);
+
+    try {
+      const response = await axios.post(
+        "https://localhost:7269/api/Authen/register",
+        formDataTosend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response);
+      alert("Register successfully wait Admin Approve");
+    } catch (err) {
+      alert("Not registered successfully");
+    }
   };
+
   return (
     <div className={cx("wrapper-register-instructor")}>
       <div className={cx("form-container")}>
@@ -51,8 +71,8 @@ function RegisterInstructor() {
               <label>UserName:</label>
               <input
                 type="text"
-                name="userName"
-                value={formData.userName}
+                name="UserName"
+                value={formData.UserName}
                 onChange={handleInputChange}
                 required
               />
@@ -61,8 +81,8 @@ function RegisterInstructor() {
               <label>Password:</label>
               <input
                 type="password"
-                name="password"
-                value={formData.password}
+                name="Password"
+                value={formData.Password}
                 onChange={handleInputChange}
                 required
               />
@@ -71,8 +91,8 @@ function RegisterInstructor() {
               <label>Full Name:</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="FullName"
+                value={formData.FullName}
                 onChange={handleInputChange}
                 required
               />
@@ -86,20 +106,11 @@ function RegisterInstructor() {
               />
             </div>
             <div>
-              <label>Certificate:</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleCertificateChange}
-                required
-              />
-            </div>
-            <div>
               <label>Date of Birth:</label>
               <input
                 type="date"
-                name="dob"
-                value={formData.dob}
+                name="DOB"
+                value={formData.DOB}
                 onChange={handleInputChange}
                 required
               />
@@ -108,8 +119,8 @@ function RegisterInstructor() {
               <label>Email:</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
+                name="Email"
+                value={formData.Email}
                 onChange={handleInputChange}
                 required
               />
@@ -118,8 +129,8 @@ function RegisterInstructor() {
               <label>Phone:</label>
               <input
                 type="tel"
-                name="phone"
-                value={formData.phone}
+                name="PhoneNumber"
+                value={formData.PhoneNumber}
                 onChange={handleInputChange}
                 required
               />
@@ -128,8 +139,8 @@ function RegisterInstructor() {
               <label>Address:</label>
               <input
                 type="text"
-                name="address"
-                value={formData.address}
+                name="Address"
+                value={formData.Address}
                 onChange={handleInputChange}
                 required
               />

@@ -113,7 +113,7 @@
 }
 
 .section-instructor{
-  min-height: 600px;
+  min-height: 560px;
   background-color: #ffeaee;
   .title-wrapper{
     .sub-title{
@@ -160,6 +160,11 @@
       height: auto;
       border-radius: 15px;
       background-color: white;
+      img{
+        border-radius: 100%;
+        width: 100%;
+        height: 200px;
+      }
       &:hover{
         border-bottom: 5px solid #FF3158;
       }
@@ -218,6 +223,9 @@
     }
     a{
       color: black;
+      &:hover{
+        color: blue;
+      }
     }
     svg{
       width: 20px;
